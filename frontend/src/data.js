@@ -1,55 +1,119 @@
 export const METRICS = [
   { id: 'headache', name: 'Headache severity', unit: '0-10', part: 'head',
     min: 0, max: 10, step: 1, default: 0,
-    normal: [0, 0], warning: [[1, 6]], critical: [['>=', 7]] },
+    normal: [0, 0], warning: [[1, 6]], critical: [['>=', 7]],
+    advice: {
+      warning: 'Rest, drink water and re-check in 30 minutes.',
+      critical: 'Stop tasks, rest, and contact the flight surgeon.',
+    } },
   { id: 'sleepLoss', name: 'Sleep deficit', unit: 'h', part: 'head',
     min: 0, max: 24, step: 1, default: 0,
-    normal: [0, 0], warning: [[1, 2]], critical: [['>', 2]] },
+    normal: [0, 0], warning: [[1, 2]], critical: [['>', 2]],
+    advice: {
+      warning: 'Schedule a full sleep period soon and avoid demanding tasks.',
+      critical: 'Sleep now and hand over critical tasks (microsleep risk).',
+    } },
   { id: 'heartRate', name: 'Resting heart rate', unit: 'bpm', part: 'heart',
     min: 30, max: 180, step: 1, default: 70,
-    normal: [60, 100], warning: [[50, 59], [101, 120]], critical: [['<', 50], ['>', 120]] },
+    normal: [60, 100], warning: [[50, 59], [101, 120]], critical: [['<', 50], ['>', 120]],
+    advice: {
+      warning: 'Sit and rest for 15 minutes, hydrate, then re-measure.',
+      critical: 'Stop activity, sit or lie down, re-measure and contact the flight surgeon.',
+    } },
   { id: 'stress', name: 'Stress (HRV RMSSD)', unit: 'ms', part: 'heart',
     min: 0, max: 250, step: 1, default: 55,
-    normal: [30, 250], warning: [[20, 29]], critical: [['<', 20]] },
+    normal: [30, 250], warning: [[20, 29]], critical: [['<', 20]],
+    advice: {
+      warning: 'Take a short break and do 5 minutes of slow breathing.',
+      critical: 'Stop non-essential tasks, rest, and talk to a crewmate or the flight surgeon.',
+    } },
   { id: 'breathingRate', name: 'Breathing rate', unit: 'breaths/min', part: 'chest',
     min: 4, max: 40, step: 1, default: 16,
-    normal: [12, 20], warning: [[21, 24]], critical: [['<', 12], ['>=', 25]] },
+    normal: [12, 20], warning: [[21, 24]], critical: [['<', 12], ['>=', 25]],
+    advice: {
+      warning: 'Slow your breathing, check cabin air and re-measure.',
+      critical: 'Check the cabin atmosphere now, rest, and contact the flight surgeon.',
+    } },
   { id: 'energy', name: 'Energy level', unit: '%', part: 'legs',
     min: 0, max: 100, step: 1, default: 80,
-    normal: [51, 100], warning: [[26, 50]], critical: [['<=', 25]] },
+    normal: [51, 100], warning: [[26, 50]], critical: [['<=', 25]],
+    advice: {
+      warning: 'Rest, eat, and reduce your workload.',
+      critical: 'Take a long rest and limit work to essential tasks.',
+    } },
 
   { id: 'diversity', name: 'Microbiome diversity', unit: 'score', part: 'chest',
     min: 0, max: 100, step: 1, default: 80,
-    normal: [70, 100], warning: [[20, 69]], critical: [['<', 20]] },
+    normal: [70, 100], warning: [[20, 69]], critical: [['<', 20]],
+    advice: {
+      warning: 'Add fibre-rich and fermented foods to meals.',
+      critical: 'Review diet and recent medication with the flight surgeon.',
+    } },
   { id: 'proteobacteria', name: 'Proteobacteria', unit: '%', part: 'chest',
     min: 0, max: 100, step: 0.1, default: 2,
-    normal: [0, 4.9], warning: [[5, 10]], critical: [['>', 10]] },
+    normal: [0, 4.9], warning: [[5, 10]], critical: [['>', 10]],
+    advice: {
+      warning: 'Review diet, cut processed food, and re-test later.',
+      critical: 'Report possible gut inflammation to the flight surgeon.',
+    } },
   { id: 'akkermansia', name: 'Akkermansia', unit: '%', part: 'chest',
     min: 0, max: 5, step: 0.1, default: 2.5,
-    normal: [1, 5], warning: [[0.1, 0.9]], critical: [['<', 0.1]] },
+    normal: [1, 5], warning: [[0.1, 0.9]], critical: [['<', 0.1]],
+    advice: {
+      warning: 'Review diet and add fibre-rich foods.',
+      critical: 'Report to the flight surgeon and review diet and metabolic health.',
+    } },
 
   { id: 'rbc', name: 'Red blood cells', unit: '10^6/uL', part: 'heart',
     min: 1, max: 8, step: 0.1, default: 4.8,
-    normal: [4.0, 5.9], warning: [[2.5, 3.9], [6.0, 6.5]], critical: [['<', 2.5], ['>', 6.5]] },
+    normal: [4.0, 5.9], warning: [[2.5, 3.9], [6.0, 6.5]], critical: [['<', 2.5], ['>', 6.5]],
+    advice: {
+      warning: 'Re-test and check hydration and iron intake.',
+      critical: 'Contact the flight surgeon: possible anemia or dehydration.',
+    } },
   { id: 'wbc', name: 'White blood cells', unit: '10^3/uL', part: 'heart',
     min: 0, max: 40, step: 0.1, default: 7.5,
-    normal: [4.5, 11.0], warning: [[2.0, 4.4], [11.1, 30.0]], critical: [['<', 2.0], ['>', 30.0]] },
+    normal: [4.5, 11.0], warning: [[2.0, 4.4], [11.1, 30.0]], critical: [['<', 2.0], ['>', 30.0]],
+    advice: {
+      warning: 'Re-test and watch for fever or signs of infection.',
+      critical: 'Contact the flight surgeon: possible infection or immune problem.',
+    } },
   { id: 'igg', name: 'Immunoglobulin G', unit: 'mg/dL', part: 'heart',
     min: 0, max: 4000, step: 10, default: 1100,
-    normal: [700, 1600], warning: [[400, 699], [1601, 3000]], critical: [['<', 400], ['>', 3000]] },
+    normal: [700, 1600], warning: [[400, 699], [1601, 3000]], critical: [['<', 400], ['>', 3000]],
+    advice: {
+      warning: 'Re-test, avoid sick contacts, and watch for signs of infection.',
+      critical: 'Contact the flight surgeon: immune function may be impaired.',
+    } },
 
   { id: 'dizziness', name: 'Dizziness', unit: '0-10', part: 'head',
     min: 0, max: 10, step: 1, default: 0,
-    normal: [0, 0], warning: [[1, 3]], critical: [['>=', 4]] },
+    normal: [0, 0], warning: [[1, 3]], critical: [['>=', 4]],
+    advice: {
+      warning: 'Move slowly, sit down when it comes on, and hydrate.',
+      critical: 'Stop standing tasks, lie down, and contact the flight surgeon.',
+    } },
   { id: 'boneMuscleLoss', name: 'Bone & muscle loss', unit: '% loss', part: 'legs',
     min: 0, max: 30, step: 1, default: 0,
-    normal: [0, 2], warning: [[3, 9]], critical: [['>=', 10]] },
+    normal: [0, 2], warning: [[3, 9]], critical: [['>=', 10]],
+    advice: {
+      warning: 'Add a resistance exercise session today.',
+      critical: 'Start the full daily resistance protocol and report to the flight surgeon.',
+    } },
   { id: 'visionAcuity', name: 'Vision acuity (20/X)', unit: 'X', part: 'head',
     min: 15, max: 100, step: 5, default: 20,
-    normal: [15, 20], warning: [[25, 40]], critical: [['>', 40]] },
+    normal: [15, 20], warning: [[25, 40]], critical: [['>', 40]],
+    advice: {
+      warning: 'Re-test your vision and log any blurring.',
+      critical: 'Report the vision change to the flight surgeon immediately.',
+    } },
   { id: 'weight', name: 'Weight loss', unit: '% loss', part: 'chest',
     min: 0, max: 20, step: 0.1, default: 0,
-    normal: [0, 1.9], warning: [[2, 5]], critical: [['>', 5]] },
+    normal: [0, 1.9], warning: [[2, 5]], critical: [['>', 5]],
+    advice: {
+      warning: 'Review food intake and re-weigh in 3 days.',
+      critical: 'Contact nutrition support and the flight surgeon.',
+    } },
 ];
 
 export const HAZARDS = [
@@ -61,7 +125,7 @@ export const HAZARDS = [
 ];
 
 export const LOCATIONS = [
-  { id: 'station', name: 'Space station', distance: '400 km', delay: '<1 s', level: 'normal' },
-  { id: 'moon', name: 'Moon', distance: '384,400 km', delay: '1.3 s', level: 'warning' },
-  { id: 'mars', name: 'Mars', distance: '55-400 million km', delay: '3-22 min', level: 'critical' },
+  { id: 'station', name: 'Space station', distance: '400 km', delay: '<1 s' },
+  { id: 'moon', name: 'Moon', distance: '384,400 km', delay: '1.3 s' },
+  { id: 'mars', name: 'Mars', distance: '55-400 million km', delay: '3-22 min' },
 ];

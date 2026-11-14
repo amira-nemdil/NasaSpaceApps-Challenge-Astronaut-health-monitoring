@@ -20,7 +20,9 @@ function ZoneStrip({ metric }) {
   const cells = [];
   for (let i = 0; i < SEGMENTS; i++) {
     const v = metric.min + ((i + 0.5) / SEGMENTS) * (metric.max - metric.min);
-    cells.push(<div key={i} className={`h-full flex-1 ${ZONE[getLevel(metric, v)]}`} />);
+    cells.push(
+      <div key={i} className={`h-full flex-1 ${ZONE[getLevel(metric, v)]}`} />,
+    );
   }
   return <div className="flex h-1.5 overflow-hidden rounded-full">{cells}</div>;
 }
@@ -30,14 +32,18 @@ function MetricRow({ metric, value, onChange }) {
 
   return (
     <div className="rounded-xl bg-slate-800/60 px-3 py-2.5">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
         <span className="text-sm text-slate-200">{metric.name}</span>
         <div className="flex items-center gap-2">
           <span className="font-mono text-sm tabular-nums">
             {show(metric, value)}
-            {metric.id !== "visionAcuity" && <span className="ml-1 text-xs text-slate-500">{metric.unit}</span>}
+            {metric.id !== "visionAcuity" && (
+              <span className="ml-1 text-xs text-slate-500">{metric.unit}</span>
+            )}
           </span>
-          <span className={`w-16 rounded-full px-2 py-0.5 text-center text-[11px] font-semibold ${BADGE[level]}`}>
+          <span
+            className={`w-16 rounded-full px-2 py-0.5 text-center text-[11px] font-semibold ${BADGE[level]}`}
+          >
             {level}
           </span>
           <button
@@ -72,12 +78,17 @@ function MetricRow({ metric, value, onChange }) {
 
 function MetricsPanel({ metrics = [], values = {}, onChange }) {
   return (
-    <div className="rounded-2xl bg-slate-900 p-4 text-white">
-      <h2 className="mb-3 text-sm font-semibold">Metrics</h2>
+    <div className="flex h-full min-h-0 flex-col rounded-2xl bg-slate-900 p-4 text-white">
+      <h2 className="mb-3 shrink-0 text-sm font-semibold">Metrics</h2>
 
-      <div className="max-h-max-h-130 space-y-2 overflow-y-auto pr-1">
+      <div className="grid max-h-[560px] min-h-0 flex-1 content-start gap-2 overflow-y-auto pr-1 md:grid-cols-2 lg:max-h-none 2xl:grid-cols-3">
         {metrics.map((m) => (
-          <MetricRow key={m.id} metric={m} value={values[m.id] ?? m.default} onChange={onChange} />
+          <MetricRow
+            key={m.id}
+            metric={m}
+            value={values[m.id] ?? m.default}
+            onChange={onChange}
+          />
         ))}
       </div>
     </div>
