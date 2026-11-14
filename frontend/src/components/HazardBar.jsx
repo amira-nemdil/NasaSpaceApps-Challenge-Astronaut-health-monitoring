@@ -1,41 +1,61 @@
+
 const STYLE = {
-  normal: "border-sky-400/40 bg-sky-400/10 text-sky-200",
-  warning: "border-amber-400/60 bg-amber-400/15 text-amber-200",
-  critical: "border-rose-500/70 bg-rose-500/15 text-rose-200",
+  normal: "border-emerald-500/30 bg-emerald-500/10",
+  warning: "border-amber-400/40 bg-amber-400/10",
+  critical: "border-rose-500/50 bg-rose-500/10",
 };
 
 const DOT = {
-  normal: "bg-sky-400",
+  normal: "bg-emerald-400",
   warning: "bg-amber-400",
   critical: "animate-pulse bg-rose-400",
 };
 
-const LABEL = { normal: "Normal", warning: "Warning", critical: "Critical" };
+const LABEL = {
+  normal: "Normal",
+  warning: "Warning",
+  critical: "Critical",
+};
 
 function DistanceChip({ hazard, locations, location, onLocation }) {
   return (
-    <div className="flex min-w-[150px] flex-1 flex-col justify-center rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 text-slate-300">
-      <div className="text-xs font-semibold">{hazard.name}</div>
-      <div className="mt-0.5 font-mono text-sm text-white">{hazard.detail}</div>
-      {hazard.sub && (
-        <div className="text-[11px] text-slate-400">{hazard.sub}</div>
-      )}
+    <div className="rounded-lg border border-slate-700/80 bg-slate-800/60 p-3">
+      <div className="mb-2">
+        <h3 className="text-sm font-semibold text-slate-100">
+          {hazard.name}
+        </h3>
+
+        <p className="mt-1 text-xs text-slate-400">
+          {hazard.detail}
+        </p>
+
+        {hazard.sub && (
+          <p className="mt-1 text-xs text-slate-500">
+            {hazard.sub}
+          </p>
+        )}
+      </div>
 
       {locations && (
-        <div className="mt-2 flex gap-1">
-          {locations.map((l) => (
-            <button
-              key={l.id}
-              onClick={() => onLocation(l.id)}
-              className={`flex-1 rounded-md px-1.5 py-1 text-[10px] font-semibold ${
-                l.id === location
-                  ? "bg-white text-slate-900"
-                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-              }`}
-            >
-              {l.name}
-            </button>
-          ))}
+        <div className="grid grid-cols-3 gap-2">
+          {locations.map((l) => {
+            const active = l.id === location;
+
+            return (
+              <button
+                key={l.id}
+                onClick={() => onLocation(l.id)}
+                aria-pressed={active}
+                className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
+                  active
+                    ? "bg-sky-400 text-slate-950 shadow-sm"
+                    : "bg-slate-700/70 text-slate-300 hover:bg-slate-600"
+                }`}
+              >
+                {l.name}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
@@ -43,35 +63,68 @@ function DistanceChip({ hazard, locations, location, onLocation }) {
 }
 
 function HazardBar({ hazards = [], locations, location, onLocation }) {
+  const hazardItems = hazards.filter((h) => h.id !== "distance");
+  const distance = hazards.find((h) => h.id === "distance");
+
   return (
-    <div className="flex flex-wrap items-stretch gap-2 rounded-2xl bg-slate-900 p-3 text-white">
-      {hazards.map((h) =>
-        h.id === "distance" ? (
+    <section className="rounded-xl border border-slate-800 bg-slate-900 p-3 text-white">
+      {/* Header */}
+      <div className="mb-3">
+        <h2 className="text-base font-bold tracking-tight text-slate-100">
+          Environmental Hazards
+        </h2>
+
+        <p className="mt-0.5 text-xs text-slate-400">
+          Current spaceflight environment status
+        </p>
+      </div>
+
+      {/* Hazard cards */}
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {hazardItems.map((h) => {
+          const level = STYLE[h.level] ? h.level : "normal";
+
+          return (
+            <div
+              key={h.id}
+              className={`flex items-center justify-between gap-2 rounded-lg border p-3 transition-colors ${STYLE[level]}`}
+            >
+              <div className="flex min-w-0 items-center gap-2">
+                <span
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${DOT[level]}`}
+                />
+
+                <div className="min-w-0">
+                  <h3 className="text-sm font-semibold text-slate-100">
+                    {h.name}
+                  </h3>
+
+                  <p className="mt-0.5 text-xs text-slate-400">
+                    Environmental condition
+                  </p>
+                </div>
+              </div>
+
+              <span className="shrink-0 rounded-full bg-slate-950/40 px-2.5 py-1 text-xs font-semibold text-slate-200">
+                {LABEL[level]}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Distance selector */}
+      {distance && (
+        <div className="mt-3">
           <DistanceChip
-            key={h.id}
-            hazard={h}
+            hazard={distance}
             locations={locations}
             location={location}
             onLocation={onLocation}
           />
-        ) : (
-          <div
-            key={h.id}
-            className={`flex min-w-[150px] flex-1 flex-col justify-center rounded-xl border px-3 py-2 ${STYLE[h.level] ?? STYLE.normal}`}
-          >
-            <div className="flex items-center gap-2 text-xs font-semibold">
-              <span
-                className={`h-2 w-2 shrink-0 rounded-full ${DOT[h.level] ?? DOT.normal}`}
-              />
-              {h.name}
-            </div>
-            <div className="mt-0.5 text-[11px] opacity-80">
-              {LABEL[h.level] ?? LABEL.normal}
-            </div>
-          </div>
-        ),
+        </div>
       )}
-    </div>
+    </section>
   );
 }
 
