@@ -47,6 +47,8 @@ The public `anomaly_score` is a held-out reference percentile of the model's rar
 
 The model can produce `normal` or `watch`. It cannot independently produce `review`, diagnose a condition, prescribe an action, or override the transparent personal-baseline assessment. Sleep stays in the daily baseline layer because MMASH provides too few nights to train multiweek sleep trends. Fatigue and mood remain self-reports.
 
+For demonstrations without wearable hardware, `/api/ml/demo/{crew_id}` generates deterministic synthetic five-minute windows and passes them through the same trained runtime pipeline. Scenario changes begin after mission day 9, while the earlier windows remain a common reference period. These values demonstrate software behavior only and are always returned with `synthetic: true`; they are not additional training data or evidence of real astronaut physiology.
+
 Model artifacts must record the dataset DOI, feature order, data split, library versions, calibration threshold, and training timestamp. See [`../data/README.md`](../data/README.md) for provenance, license, layout and reproducibility instructions.
 
 ## Recommended crew workflow

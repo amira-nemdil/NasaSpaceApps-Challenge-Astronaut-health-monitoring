@@ -70,6 +70,16 @@ python backend/scripts/train_mmash.py
 
 Training creates `backend/models/mmash_iforest_v1.joblib` and a metadata file. The model processes five-minute heart-rate and actigraphy windows. Sleep, fatigue, and mood remain in the separate baseline/self-report layer.
 
+### 5. Run the demo without sensor hardware
+
+No physical wearable is required. The backend can generate clearly labeled, deterministic five-minute windows and score them with the trained model:
+
+```text
+GET http://127.0.0.1:8000/api/ml/demo/crew-01?scenario=cardio_stress
+```
+
+The response contains 14 mission days with the synthetic model input, ML output, transparent baseline assessment, and combined display status. See [`docs/FRONTEND_INTEGRATION.md`](docs/FRONTEND_INTEGRATION.md) for the React handoff.
+
 ## Live walkthrough (90 seconds)
 
 1. Open **Mission Health** with a crew member selected; point out the **synthetic data** label.

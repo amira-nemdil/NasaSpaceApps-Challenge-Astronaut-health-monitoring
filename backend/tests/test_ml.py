@@ -81,3 +81,37 @@ def test_ml_score_endpoint_rejects_insufficient_heart_rate_coverage():
 
     assert response.status_code == 422
     assert "60%" in response.json()["detail"]
+
+
+def test_hardware_free_demo_returns_frontend_ready_synthetic_timeline():
+    results = {}
+    for scenario in ("nominal", "sleep_debt", "cardio_stress"):
+        response = client.get(f"/api/ml/demo/crew-01?scenario={scenario}")
+        assert response.status_code == 200
+        results[scenario] = response.json()
+
+    nominal = results["nominal"]
+    assert nominal["synthetic"] is True
+    assert len(nominal["timeline"]) == 14
+    assert nominal["last_day"]["model_output"]["status"] == "normal"
+    assert nominal["last_day"]["overall_status"] == "normal"
+    assert "not physical-sensor" in nominal["data_source"]
+
+    sleep = results["sleep_debt"]
+    assert sleep["last_day"]["model_output"]["status"] == "watch"
+    assert sleep["last_day"]["baseline_assessment"]["status"] == "review"
+    assert sleep["last_day"]["overall_status"] == "review"
+
+    cardio = results["cardio_stress"]
+    assert cardio["last_day"]["model_output"]["status"] == "watch"
+    assert cardio["last_day"]["overall_status"] == "review"
+
+    assert (
+        results["nominal"]["timeline"][0]["model_input"]
+        == results["cardio_stress"]["timeline"][0]["model_input"]
+    )
+
+
+def test_hardware_free_demo_validates_crew_and_scenario():
+    assert client.get("/api/ml/demo/missing").status_code == 404
+    assert client.get("/api/ml/demo/crew-01?scenario=unknown").status_code == 422

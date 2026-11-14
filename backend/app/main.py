@@ -13,6 +13,7 @@ from urllib.request import urlopen
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from .demo import DemoTimelineResponse, demo_model_timeline
 from .ml import (
     InsufficientDataError,
     InvalidModelArtifactError,
@@ -62,6 +63,24 @@ def score_ml_window(payload: ModelScoreRequest):
         return score_sensor_window(payload)
     except InsufficientDataError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except ModelArtifactNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except InvalidModelArtifactError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The trained MMASH model is unavailable or incompatible.",
+        ) from exc
+
+
+@app.get("/api/ml/demo/{crew_id}", response_model=DemoTimelineResponse)
+def get_ml_demo(crew_id: str, scenario: Scenario = "nominal"):
+    """Return a hardware-free, clearly synthetic 14-day model demonstration."""
+
+    member = next((person for person in CREW if person["id"] == crew_id), None)
+    if not member:
+        raise HTTPException(status_code=404, detail="Crew member not found")
+    try:
+        return demo_model_timeline(member, scenario)
     except ModelArtifactNotFoundError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except InvalidModelArtifactError as exc:

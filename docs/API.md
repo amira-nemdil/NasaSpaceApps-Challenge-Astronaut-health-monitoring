@@ -9,6 +9,7 @@ FastAPI runs locally on `http://127.0.0.1:8000`. Interactive specification: `/do
 | GET | `/api/crew/crew-01?scenario=sleep_debt` | Crew info, baseline, 14-day simulated telemetry + review drivers |
 | GET | `/api/space-weather` | Optional NASA DONKI SEP event report metadata |
 | POST | `/api/ml/score` | Score one five-minute wearable window with the optional MMASH Isolation Forest |
+| GET | `/api/ml/demo/crew-01?scenario=cardio_stress` | Generate and score a hardware-free, synthetic 14-day model demo |
 
 Scenario values: `nominal`, `sleep_debt`, `cardio_stress`.
 
@@ -93,6 +94,41 @@ Example response:
 ```
 
 `anomaly_score` is the percentile rank of statistical rarity against held-out MMASH reference windows. It is not a disease probability. The model returns only `normal` or `watch`; it cannot independently trigger a medical-review state. A missing model artifact produces an unavailable-service response until `python backend/scripts/train_mmash.py` has completed.
+
+## Hardware-free model demo
+
+`GET /api/ml/demo/{crew_id}?scenario=nominal|sleep_debt|cardio_stress` requires no physical sensor. It returns 14 deterministic, explicitly synthetic five-minute inputs scored by the real trained model. Each timeline item contains:
+
+```json
+{
+  "mission_day": 14,
+  "model_input": {
+    "crew_id": "crew-01",
+    "timestamp": "2026-11-14T10:35:00Z",
+    "window_minutes": 5,
+    "heart_rate_mean_bpm": 115.3,
+    "heart_rate_std_bpm": 20.1,
+    "activity_vector_magnitude_mean": 2.4,
+    "steps": 1,
+    "lying_fraction": 0.19,
+    "valid_heart_rate_fraction": 0.98
+  },
+  "model_output": {
+    "anomaly_score": 1.0,
+    "is_anomaly": true,
+    "status": "watch",
+    "drivers": []
+  },
+  "baseline_assessment": {
+    "status": "review",
+    "score": 4.0,
+    "drivers": []
+  },
+  "overall_status": "review"
+}
+```
+
+Values above are abbreviated examples. Use the returned JSON rather than hard-coding them. The ML layer can raise only `watch`; `overall_status` becomes `review` only when the separate transparent baseline layer does. Every demo response includes `synthetic: true`, its data source, and a non-clinical disclaimer.
 
 ## Testing
 
