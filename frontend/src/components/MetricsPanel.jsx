@@ -70,63 +70,14 @@ function MetricRow({ metric, value, onChange }) {
   );
 }
 
-function LocationPicker({ locations, location, onLocation }) {
-  const current = locations.find((l) => l.id === location);
-  return (
-    <div className="rounded-xl bg-slate-800/60 px-3 py-2.5">
-      <div className="mb-2 text-sm text-slate-200">Distance from Earth</div>
-      <div className="flex gap-2">
-        {locations.map((l) => (
-          <button
-            key={l.id}
-            onClick={() => onLocation(l.id)}
-            className={`flex-1 rounded-lg px-2 py-1.5 text-xs font-semibold ${
-              l.id === location ? "bg-sky-400 text-slate-900" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-            }`}
-          >
-            {l.name}
-          </button>
-        ))}
-      </div>
-      {current && (
-        <div className="mt-2 font-mono text-[11px] text-slate-400">
-          {current.distance} · {current.delay} one-way delay
-        </div>
-      )}
-    </div>
-  );
-}
-
-function MetricsPanel({ metrics = [], values = {}, hazards, locations, location, onChange, onLocation }) {
-  const groups = hazards
-    ? hazards
-        .map((h) => ({ id: h.id, title: h.name, list: metrics.filter((m) => h.metrics.includes(m.id)) }))
-        .filter((g) => g.list.length)
-    : [{ id: "all", title: null, list: metrics }];
-
+function MetricsPanel({ metrics = [], values = {}, onChange }) {
   return (
     <div className="rounded-2xl bg-slate-900 p-4 text-white">
       <h2 className="mb-3 text-sm font-semibold">Metrics</h2>
 
-      <div className="max-h-130 space-y-4 overflow-y-auto pr-1">
-        {locations && (
-          <div>
-            <div className="mb-1.5 text-[10px] uppercase tracking-widest text-slate-400">Mission location</div>
-            <LocationPicker locations={locations} location={location} onLocation={onLocation} />
-          </div>
-        )}
-
-        {groups.map((g) => (
-          <div key={g.id}>
-            {g.title && (
-              <div className="mb-1.5 text-[10px] uppercase tracking-widest text-slate-400">{g.title}</div>
-            )}
-            <div className="space-y-2">
-              {g.list.map((m) => (
-                <MetricRow key={m.id} metric={m} value={values[m.id] ?? m.default} onChange={onChange} />
-              ))}
-            </div>
-          </div>
+      <div className="max-h-max-h-130 space-y-2 overflow-y-auto pr-1">
+        {metrics.map((m) => (
+          <MetricRow key={m.id} metric={m} value={values[m.id] ?? m.default} onChange={onChange} />
         ))}
       </div>
     </div>

@@ -131,7 +131,7 @@ function Body() {
       <h2 className="mb-4 text-lg font-semibold">Astronaut Body Monitoring</h2>
 
       <div className="flex justify-center">
-        <svg viewBox="0 0 300 550" className="w-full max-w-[260px]">
+        <svg viewBox="0 0 300 550" className="w-full max-w-65">
           {/* Legs */}
           <Part {...common("legs")} d={LEG_D} />
           <Part
@@ -167,7 +167,7 @@ function Body() {
       </div>
 
       {/* Selected part info */}
-      <div className="mt-4 min-h-[56px] rounded-xl bg-slate-800 px-4 py-3 text-sm">
+      <div className="mt-4 min-h-14 rounded-xl bg-slate-800 px-4 py-3 text-sm">
         {selected ? (
           <div className="flex items-center justify-between">
             <span className="font-medium">{partLabels[selected]}</span>
