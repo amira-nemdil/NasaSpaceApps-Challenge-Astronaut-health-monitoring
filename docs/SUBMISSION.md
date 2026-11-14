@@ -1,15 +1,19 @@
 # NASA Space Apps project submission plan — InfinityDz
 
 ## Working title
+
 AstroPulse — Explainable Astronaut Health Monitoring
 
 ## One-line pitch
+
 An offline-friendly, crew-first monitoring prototype that helps astronauts understand changes in their own health indicators and prepares clear, explainable prompts for flight-medical review.
 
 ## Problem
+
 Astronauts on long missions may need to evaluate multiple health and behavioral indicators while operating under communication and resource constraints. Personal context and transparent explanations matter; a generic alert-only dashboard is not enough.
 
 ## Solution and innovation
+
 AstroPulse simulates three crew profiles, each with their own 14-day timeline. A transparent baseline-comparison engine shows when sleep, resting heart rate, fatigue, or mood shift and explains the contribution of each measurement. It optionally displays actual NASA space-weather event reports as separate, non-clinical context.
 
 ## Live demonstration (90 seconds)
@@ -27,9 +31,9 @@ AstroPulse simulates three crew profiles, each with their own 14-day timeline. A
 
 ## Checklist
 
-- [ ] Confirm all six teammates are registered under InfinityDz on the official NASA event website
-- [ ] Ask Boumerdès organizer how remote participation, in-person presentation and judging work
-- [ ] Assign team roles explicitly and document actual contributions
+- [X] Confirm all six teammates are registered under InfinityDz on the official NASA event website
+- [X] Ask Boumerdès organizer how remote participation, in-person presentation and judging work
+- [X] Assign team roles explicitly and document actual contributions
 - [ ] Run the backend tests and frontend build
 - [ ] Record screenshots / 90–120 second walkthrough
 - [ ] Credit NASA Space Apps, NASA DONKI data if used, and acknowledge AI-assisted starter code
