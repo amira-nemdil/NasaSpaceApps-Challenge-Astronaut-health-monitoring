@@ -2,7 +2,7 @@ import { useState } from "react";
 
 /* ---------- Config ---------- */
 
-const bodyStatus = {
+const defaultStatus = {
   head: "normal",
   chest: "normal",
   heart: "warning",
@@ -98,7 +98,8 @@ function Part({
 
 /* ---------- Component ---------- */
 
-function Body() {
+function Body({ status = defaultStatus, details = {} }) {
+  const bodyStatus = status;
   const [selected, setSelected] = useState(null);
   const [hovered, setHovered] = useState(null);
 
@@ -131,7 +132,7 @@ function Body() {
       <h2 className="mb-4 text-lg font-semibold">Astronaut Body Monitoring</h2>
 
       <div className="flex justify-center">
-        <svg viewBox="0 0 300 550" className="w-full max-w-65">
+        <svg viewBox="0 0 300 550" className="w-full max-w-[260px]">
           {/* Legs */}
           <Part {...common("legs")} d={LEG_D} />
           <Part
@@ -167,16 +168,37 @@ function Body() {
       </div>
 
       {/* Selected part info */}
-      <div className="mt-4 min-h-14 rounded-xl bg-slate-800 px-4 py-3 text-sm">
+      <div className="mt-4 min-h-[56px] rounded-xl bg-slate-800 px-4 py-3 text-sm">
         {selected ? (
-          <div className="flex items-center justify-between">
-            <span className="font-medium">{partLabels[selected]}</span>
-            <span
-              className="rounded-full px-3 py-1 text-xs font-semibold text-slate-900"
-              style={{ background: statusColors[bodyStatus[selected]].inner }}
-            >
-              {statusLabels[bodyStatus[selected]]}
-            </span>
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="font-medium">{partLabels[selected]}</span>
+              <span
+                className="rounded-full px-3 py-1 text-xs font-semibold text-slate-900"
+                style={{ background: statusColors[bodyStatus[selected]].inner }}
+              >
+                {statusLabels[bodyStatus[selected]]}
+              </span>
+            </div>
+            {details[selected]?.length > 0 && (
+              <ul className="mt-3 space-y-1 text-xs text-slate-300">
+                {details[selected].map((d) => (
+                  <li
+                    key={d.id}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <span>{d.name}</span>
+                    <span className="flex items-center gap-2 font-mono">
+                      {d.value}
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ background: statusColors[d.level].edge }}
+                      />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ) : (
           <span className="text-slate-400">
