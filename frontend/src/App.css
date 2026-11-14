@@ -161,6 +161,32 @@
   }
 }
 
+.app-shell {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24px;
+  background: #020617;
+  color: #f8fafc;
+}
+
+.app-shell > div {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 16px;
+  background: #0f172a;
+}
+
+.app-shell h2 {
+  color: inherit;
+}
+
+.app-shell svg {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
 .ticks {
   position: relative;
   width: 100%;
