@@ -15,7 +15,7 @@ import {
   partLevels,
   diffLevels,
   formatValue,
-} from "./status.js";
+} from "./status.js";          
 
 import "./App.css";
 
@@ -114,7 +114,7 @@ function App() {
         if (to === "critical")
           notify(
             "error",
-            `${h.name} hazard: critical`,
+            `${h.name} hazard: critical`,          //ttttt
             `Triggered by: ${causes}`,
           );
         entries.push({
