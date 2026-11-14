@@ -114,7 +114,7 @@ function App() {
         if (to === "critical")
           notify(
             "error",
-            `${h.name} hazard: critical`,          //t
+            `${h.name} hazard: critical`,          //
             `Triggered by: ${causes}`,
           );
         entries.push({
