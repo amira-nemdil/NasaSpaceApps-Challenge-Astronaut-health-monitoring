@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Body from "./components/Body";
 import Simulator from "./components/Simulator";
@@ -182,11 +183,15 @@ function App() {
       </div>
 
       <ToastContainer
-        theme="dark"
         position="top-right"
-        limit={4}
-        autoClose={7000}
-        newestOnTop
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        theme="dark"
       />
     </main>
   );
