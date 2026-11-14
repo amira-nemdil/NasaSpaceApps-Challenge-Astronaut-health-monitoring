@@ -17,3 +17,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Local datasets and generated feature tables
+data/raw/
+data/processed/

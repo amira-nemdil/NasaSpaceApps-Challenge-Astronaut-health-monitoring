@@ -21,7 +21,7 @@ NASA's challenge asks for software that **gathers health indicators and enables 
 
 - **Frontend:** React 18 + Vite + vanilla CSS (responsive, no external component library)
 - **Backend:** Python 3.10+ + FastAPI (local, deterministic simulation)
-- **Monitoring engine:** statistical anomaly scores over each astronaut's **first seven days** of data; no trained clinical model or falsely claimed medical accuracy
+- **Monitoring engine:** transparent personal-baseline checks plus an optional MMASH-trained Isolation Forest for five-minute wearable windows; neither layer is clinically validated
 - **Optional real NASA data:** NASA DONKI SEP event metadata through the official NASA Open API (live internet and availability required)
 
 ## Quick start
@@ -58,6 +58,18 @@ cd backend
 python -m pytest -q
 ```
 
+### 4. Train the optional MMASH model
+
+Download [MMASH v1.0.0 from PhysioNet](https://physionet.org/content/mmash/1.0.0/) and place the 22 `user_*` folders under `data/raw/mmash/`, following [`data/README.md`](data/README.md). Raw and processed datasets stay local and are not committed.
+
+From the repository root:
+
+```bash
+python backend/scripts/train_mmash.py
+```
+
+Training creates `backend/models/mmash_iforest_v1.joblib` and a metadata file. The model processes five-minute heart-rate and actigraphy windows. Sleep, fatigue, and mood remain in the separate baseline/self-report layer.
+
 ## Live walkthrough (90 seconds)
 
 1. Open **Mission Health** with a crew member selected; point out the **synthetic data** label.
@@ -72,8 +84,15 @@ python -m pytest -q
 ```text
 backend/
   app/main.py           # FastAPI routes and NASA DONKI adapter
+  app/ml.py             # MMASH model input contract and scoring
   app/simulator.py      # synthetic mission telemetry and baseline logic
+  scripts/train_mmash.py # reproducible preprocessing and training
+  models/               # generated model and metadata
   tests/                # scenario and API tests
+data/
+  README.md             # dataset source, layout, license and citation
+  raw/mmash/            # local MMASH participant folders (gitignored)
+  processed/            # reproducible intermediate data (gitignored)
 frontend/
   src/App.jsx           # dashboard, scenario and mission day controls
   src/styles.css        # responsive styling
@@ -106,6 +125,7 @@ These are **suggested roles** to confirm with the team, not pre-agreed assignmen
 - [NASA Open Science Data Repository](https://osdr.nasa.gov/) — research studies; **not** the simulator's data source
 - [NASA DONKI API](https://api.nasa.gov/) — optional real reported solar energetic particle *events*, **not** crew dose/health impact
 - [NASA Space Apps discussion on available data](https://github.com/nasa/spaceapps/discussions/2025) — supports clearly labeled synthetic telemetry when public real-time individual astronaut records are unavailable
+- [MMASH v1.0.0 on PhysioNet](https://physionet.org/content/mmash/1.0.0/) — Earth-based wearable reference data for the optional anomaly model; not astronaut or clinical validation data
 
 Do not say that synthetic crew observations come from NASA, that public solar-event reports measure a specific astronaut's dose, or that the prototype predicts medical events.
 

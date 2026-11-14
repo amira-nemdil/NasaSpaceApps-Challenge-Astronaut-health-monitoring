@@ -13,10 +13,18 @@ from urllib.request import urlopen
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from .ml import (
+    InsufficientDataError,
+    InvalidModelArtifactError,
+    ModelArtifactNotFoundError,
+    ModelScoreRequest,
+    ModelScoreResponse,
+    score_sensor_window,
+)
 from .simulator import CREW, mission
 
 app = FastAPI(title="AstroPulse — InfinityDz", version="0.1.0", description="Synthetic astronaut health monitoring; not for clinical use.")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], allow_credentials=False, allow_methods=["GET"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["*"])
 
 Scenario = Literal["nominal", "sleep_debt", "cardio_stress"]
 
@@ -40,6 +48,27 @@ def get_mission(crew_id: str, scenario: Scenario = "nominal"):
     if not member:
         raise HTTPException(status_code=404, detail="Crew member not found")
     return mission(member, scenario)
+
+
+@app.post("/api/ml/score", response_model=ModelScoreResponse)
+def score_ml_window(payload: ModelScoreRequest):
+    """Score one five-minute wearable window with the MMASH model.
+
+    The response is a statistical rarity assessment, not a diagnosis or
+    flight-medical decision.
+    """
+
+    try:
+        return score_sensor_window(payload)
+    except InsufficientDataError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except ModelArtifactNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except InvalidModelArtifactError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The trained MMASH model is unavailable or incompatible.",
+        ) from exc
 
 
 @app.get("/api/space-weather")

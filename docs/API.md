@@ -8,6 +8,7 @@ FastAPI runs locally on `http://127.0.0.1:8000`. Interactive specification: `/do
 | GET | `/api/crew?scenario=nominal` | Three fictitious crew profiles and day-14 prototype status |
 | GET | `/api/crew/crew-01?scenario=sleep_debt` | Crew info, baseline, 14-day simulated telemetry + review drivers |
 | GET | `/api/space-weather` | Optional NASA DONKI SEP event report metadata |
+| POST | `/api/ml/score` | Score one five-minute wearable window with the optional MMASH Isolation Forest |
 
 Scenario values: `nominal`, `sleep_debt`, `cardio_stress`.
 
@@ -44,6 +45,54 @@ Important keys for the individual crew endpoint:
 This example is **illustrative and abbreviated**, not an exact captured endpoint payload; the response includes 14 full records. Inspect `/docs` or `curl` the running service for exact data.
 
 `/api/space-weather` returns `available`, `events`, `window`, `data_source`, and `important`. If NASA is unreachable, it returns `available: false` and `events: []`; **no fabricated live events**.
+
+## MMASH model scoring
+
+`POST /api/ml/score` accepts one summarized five-minute sensor window. The backend derives logarithmic activity features and cyclic time-of-day features before applying the saved preprocessing and Isolation Forest pipeline.
+
+```json
+{
+  "crew_id": "crew-01",
+  "timestamp": "2026-11-15T10:35:00Z",
+  "window_minutes": 5,
+  "heart_rate_mean_bpm": 84.1,
+  "heart_rate_std_bpm": 6.3,
+  "activity_vector_magnitude_mean": 18.6,
+  "steps": 12,
+  "lying_fraction": 0.0,
+  "valid_heart_rate_fraction": 0.96
+}
+```
+
+Example response:
+
+```json
+{
+  "model_version": "mmash-iforest-v1",
+  "window_minutes": 5,
+  "anomaly_score": 0.4415,
+  "threshold": 0.99,
+  "is_anomaly": false,
+  "status": "normal",
+  "feature_values": {
+    "heart_rate_mean_bpm": 84.1,
+    "heart_rate_std_bpm": 6.3,
+    "activity_vector_magnitude_mean": 18.6,
+    "steps": 12,
+    "lying_fraction": 0.0
+  },
+  "drivers": [],
+  "data_quality": {
+    "valid_heart_rate_fraction": 0.96,
+    "accepted": true,
+    "minimum_required": 0.6
+  },
+  "explanation_method": "Held-out reference percentile plus robust feature deviations; not Isolation Forest feature attribution",
+  "is_clinically_validated": false
+}
+```
+
+`anomaly_score` is the percentile rank of statistical rarity against held-out MMASH reference windows. It is not a disease probability. The model returns only `normal` or `watch`; it cannot independently trigger a medical-review state. A missing model artifact produces an unavailable-service response until `python backend/scripts/train_mmash.py` has completed.
 
 ## Testing
 

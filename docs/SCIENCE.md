@@ -23,7 +23,31 @@ For a given synthetic astronaut and signal \(x\):
 - A directional deviation score is \(z = (x - \mu)/\max(\sigma,f)\) for rising heart rate and fatigue, and \(z = (\mu-x)/\max(\sigma,f)\) for falling sleep and mood.
 - If any \(z\ge1.8\), flag **watch**. If any \(z\ge2.8\) or two or more indicators have \(z\ge1.8\), flag **review**.
 
-**Every number above is a demo engineering choice, NOT a clinical threshold, validated biomarker limit, or astronaut-specific safety rule.** This is transparent statistical monitoring; it should not be advertised as supervised or validated AI. It is possible to replace the engine with Isolation Forest when real, usable research data is secured, but that work is not yet implemented.
+**Every number above is a demo engineering choice, NOT a clinical threshold, validated biomarker limit, or astronaut-specific safety rule.** This transparent baseline layer remains separate from the optional machine-learning layer.
+
+## MMASH Isolation Forest layer
+
+The optional model uses [MMASH v1.0.0](https://physionet.org/content/mmash/1.0.0/), an openly licensed reference dataset containing about 24 hours of wearable observations from 22 healthy young adult male participants on Earth. It is not astronaut, microgravity, clinical-patient, or multiweek mission data.
+
+The preprocessing script turns each participant's `Actigraph.csv` into non-overlapping five-minute windows. Windows with less than 60% valid heart-rate coverage are rejected. The fixed model vector contains:
+
+1. mean heart rate in beats per minute;
+2. heart-rate standard deviation;
+3. log-transformed mean vector magnitude;
+4. log-transformed step count;
+5. fraction of samples marked as lying;
+6. sine of time of day; and
+7. cosine of time of day.
+
+Missing values are imputed from the training split, features are robustly scaled, and an unsupervised Isolation Forest estimates how unusual a window is relative to MMASH. Participants, rather than neighboring sensor rows, are separated between training, calibration, and testing to reduce leakage.
+
+ActiGraph movement counts are device-specific, so a different wearable requires calibration before inference. The submitted timestamp represents the crew member's mission/local clock for the two daily-cycle features. `crew_id` routes the result to a profile but is not itself a model feature.
+
+The public `anomaly_score` is a held-out reference percentile of the model's rarity score. A value such as `0.99` means the window is at or above the 99th percentile of statistical rarity in that calibration set. It does **not** mean 99% probability of illness, emergency, or future harm. Reference deviations can suggest which observed features merit attention, but they are not native causal feature attributions from Isolation Forest.
+
+The model can produce `normal` or `watch`. It cannot independently produce `review`, diagnose a condition, prescribe an action, or override the transparent personal-baseline assessment. Sleep stays in the daily baseline layer because MMASH provides too few nights to train multiweek sleep trends. Fatigue and mood remain self-reports.
+
+Model artifacts must record the dataset DOI, feature order, data split, library versions, calibration threshold, and training timestamp. See [`../data/README.md`](../data/README.md) for provenance, license, layout and reproducibility instructions.
 
 ## Recommended crew workflow
 
@@ -40,8 +64,8 @@ The NASA request is optional and fails safely; the app makes no fake "live NASA 
 ## Improvements after the hackathon
 
 1. Read mission medical standards and ask clinicians to set appropriate use boundaries.
-2. Find fit-for-purpose, licensed datasets and document informed consent/privacy practices.
-3. Evaluate whether baseline anomaly detection is robust under sensor noise, missing data, individual differences, and adaptation to microgravity.
+2. Add more representative, longitudinal and space-relevant datasets while documenting consent, privacy and license requirements.
+3. Evaluate both monitoring layers under sensor noise, missing data, individual differences, dataset shift and adaptation to microgravity.
 4. Add explicit missing-data handling, audits, and secure local storage.
 5. Study constraints of long-duration missions and evaluate local-first operation when network access is intermittent.
 
