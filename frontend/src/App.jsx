@@ -476,7 +476,7 @@ function App() {
           notify(
             "error",
             `${h.name} hazard: critical`,
-            `Triggered by: ${causes}`   //   ,
+            `Triggered by: ${causes}`  ,
           );
         }
 
