@@ -540,8 +540,13 @@ function App() {
   // ---------------- UI ----------------
 
   return (
-    <main className="min-h-screen bg-slate-950 p-4 text-white">
-      <div className="mx-auto grid max-w-7xl gap-4">
+    <main className="space-app relative isolate min-h-screen bg-slate-950 p-4 text-white">
+      <div className="space-backdrop" aria-hidden="true">
+        <span className="space-planet space-planet--ringed" />
+        <span className="space-planet space-planet--distant" />
+        <span className="space-planet space-planet--tiny" />
+      </div>
+      <div className="relative z-10 mx-auto grid max-w-7xl gap-4">
 
         <Simulator
           clock={clock}
