@@ -127,8 +127,8 @@ export const METRICS = [
   min: 15, max: 100, step: 5, default: 20,
   normal: [15, 20], warning: [[25, 40]], critical: [['>', 40]],
   advice: {
-    warning: 'Rest your eyes from screens, use eye drops, and put on your glasses.',
-    critical: 'Stop visual tasks, wear your glasses and call the flight surgeon.'
+    warning: 'Rest your eyes from screens, use eye drops, and put on your backup glasses if it look blurry.',
+    critical: 'Stop visual tasks, wear your prescription glasses and call the flight surgeon to check the fluid pressure.'
   }
 },
   
