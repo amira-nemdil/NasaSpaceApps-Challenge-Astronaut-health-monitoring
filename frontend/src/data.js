@@ -23,8 +23,8 @@ export const METRICS = [
     min: 30, max: 180, step: 1, default: 70,
     normal: [60, 100], warning: [[50, 59], [101, 120]], critical: [['<', 50], ['>', 120]],
     advice: {
-      warning: 'Sit and rest for 15 minutes, hydrate, then re-measure.',
-      critical: 'Stop activity, sit or lie down, re-measure and contact the flight surgeon.',
+      warning: 'Sit and rest for 15 minutes, hydrate, then re-measure, Avoid coffee or caffeine if your heart rate is high',
+      critical: 'Stop all physical work immediately and lie down, re-measure and contact the flight surgeon.',
     }
   },
   {
@@ -42,7 +42,7 @@ export const METRICS = [
     normal: [12, 20], warning: [[21, 24]], critical: [['<', 12], ['>=', 25]],
     advice: {
       warning: 'Slow your breathing, You need to relax and stretch your body.',
-      critical: 'Check the cabin atmosphere now, relax ,bending your knees.',
+      critical: 'Check cabin oxygen and CO2 levels immediately, relax ,bending your knees.',
     }
   },
   {
@@ -137,8 +137,8 @@ export const METRICS = [
     min: 0, max: 20, step: 0.1, default: 0,
     normal: [0, 1.9], warning: [[2, 5]], critical: [['>', 5]],
     advice: {
-      warning: 'Review food intake and re-weigh in 3 days.',
-      critical: 'Contact nutrition support and the flight surgeon.',
+      warning: 'Review food intake, Add high-calorie snacks like nuts and re-weigh in 3 days.',
+      critical: 'Eat protein-rich foods ,Contact nutrition support to change your meals plan.',
     }
   },
 ];
