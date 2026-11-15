@@ -68,8 +68,9 @@ export const METRICS = [
     min: 1, max: 8, step: 0.1, default: 4.8,
     normal: [4.0, 5.9], warning: [[2.5, 3.9], [6.0, 6.5]], critical: [['<', 2.5], ['>', 6.5]],
     advice: {
-      warning: 'Re-test and check hydration and iron intake.',
-      critical: 'Contact the flight surgeon: possible anemia or dehydration.',
+      warning: ' Take B12 ,Iron vitamines (fish,meat ,beans) , or Take Biotary Supplement.',
+      // critical: 'Contact the flight surgeon: possible anemia or dehydration.',
+      critical: 'Take Erythropoietin (EPO).',
     } },
   { id: 'wbc', name: 'White blood cells', unit: '10^3/uL', part: 'heart',
     min: 0, max: 40, step: 0.1, default: 7.5,
@@ -78,14 +79,6 @@ export const METRICS = [
       warning: 'Re-test and watch for fever or signs of infection.',
       critical: 'Contact the flight surgeon: possible infection or immune problem.',
     } },
-  { id: 'igg', name: 'Immunoglobulin G', unit: 'mg/dL', part: 'heart',
-    min: 0, max: 4000, step: 10, default: 1100,
-    normal: [700, 1600], warning: [[400, 699], [1601, 3000]], critical: [['<', 400], ['>', 3000]],
-    advice: {
-      warning: 'Re-test, avoid sick contacts, and watch for signs of infection.',
-      critical: 'Contact the flight surgeon: immune function may be impaired.',
-    } },
-
   { id: 'dizziness', name: 'Dizziness', unit: '0-10', part: 'head',
     min: 0, max: 10, step: 1, default: 0,
     normal: [0, 0], warning: [[1, 3]], critical: [['>=', 4]],
