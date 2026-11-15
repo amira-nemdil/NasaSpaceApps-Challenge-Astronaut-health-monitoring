@@ -3,8 +3,8 @@ export const METRICS = [
     min: 0, max: 10, step: 1, default: 0,
     normal: [0, 0], warning: [[1, 6]], critical: [['>=', 7]],
     advice: {
-      warning: 'Rest, drink water and re-check in 30 minutes.',
-      critical: 'Stop tasks, rest, and contact the flight surgeon.',
+      warning: 'close the eyes and relaxe ,drink water and re-check in 30 minutes.',
+      critical: 'Stop tasks, take a medicament "paracetamol" and rest.',
     } },
   { id: 'sleepLoss', name: 'Sleep deficit', unit: 'h', part: 'head',
     min: 0, max: 24, step: 1, default: 0,
@@ -76,8 +76,8 @@ export const METRICS = [
     min: 0, max: 40, step: 0.1, default: 7.5,
     normal: [4.5, 11.0], warning: [[2.0, 4.4], [11.1, 30.0]], critical: [['<', 2.0], ['>', 30.0]],
     advice: {
-      warning: 'Re-test and watch for fever or signs of infection.',
-      critical: 'Contact the flight surgeon: possible infection or immune problem.',
+      warning: 'Eat  Meats ,fishes and Poultry or Lentils (for containing vit b6,b12 ,zinc,iron ).',
+      critical: ' Take antibiotique, antivirus plus isolate from any source of danger.',
     } },
   { id: 'dizziness', name: 'Dizziness', unit: '0-10', part: 'head',
     min: 0, max: 10, step: 1, default: 0,
