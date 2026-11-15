@@ -174,10 +174,19 @@ function App() {
           onLocation={changeLocation}
         />
 
-        <div className="grid items-start gap-4 lg:grid-cols-[340px_1fr]">
-          <Body status={partLv} details={details} />
-          <MetricsPanel metrics={METRICS} values={values} onChange={setValue} />
-        </div>
+        <div className="grid min-h-0 items-stretch gap-4 lg:grid-cols-[340px_1fr]">
+  <div className="h-[420px] min-h-0 lg:h-[480px]">
+    <Body status={partLv} details={details} />
+  </div>
+
+  <div className="h-[420px] min-h-0 lg:h-[480px]">
+    <MetricsPanel
+      metrics={METRICS}
+      values={values}
+      onChange={setValue}
+    />
+  </div>
+</div>
 
         <Log entries={log} onClear={() => setLog([])} />
       </div>

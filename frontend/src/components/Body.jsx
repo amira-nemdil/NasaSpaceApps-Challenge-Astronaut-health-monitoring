@@ -113,7 +113,7 @@ function Body({ status = defaultStatus, details = {} }) {
   });
 
   return (
-    <div className="rounded-2xl bg-slate-900 p-6 text-white">
+    <div className="flex h-full min-h-0 flex-col rounded-2xl bg-slate-900 p-4 text-white">
       <style>{`
         @keyframes heartbeat {
           0%, 100% { transform: scale(1); }
@@ -129,10 +129,16 @@ function Body({ status = defaultStatus, details = {} }) {
         }
       `}</style>
 
-      <h2 className="mb-4 text-lg font-semibold">Astronaut Body Monitoring</h2>
+      <h2 className="mb-2 shrink-0 text-center text-lg font-semibold">
+  Astronaut Body Monitoring
+</h2>
 
-      <div className="flex justify-center">
-        <svg viewBox="0 0 300 550" className="w-full max-w-[260px]">
+      <div className="flex min-h-0 flex-1 justify-center">
+  <svg
+    viewBox="0 0 300 550"
+    className="h-full w-full max-w-[260px]"
+    preserveAspectRatio="xMidYMid meet"
+  >
           {/* Legs */}
           <Part {...common("legs")} d={LEG_D} />
           <Part
@@ -168,7 +174,7 @@ function Body({ status = defaultStatus, details = {} }) {
       </div>
 
       {/* Selected part info */}
-      <div className="mt-4 min-h-[56px] rounded-xl bg-slate-800 px-4 py-3 text-sm">
+      <div className="mt-2 min-h-[56px] shrink-0 rounded-xl bg-slate-800 px-3 py-2 text-sm">
         {selected ? (
           <div>
             <div className="flex items-center justify-between">
@@ -208,7 +214,7 @@ function Body({ status = defaultStatus, details = {} }) {
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm">
+      <div className="mt-2 flex shrink-0 flex-wrap justify-center gap-3 text-xs">
         <span className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-full bg-sky-400" />
           Normal

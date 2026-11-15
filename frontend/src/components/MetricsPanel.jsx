@@ -32,9 +32,11 @@ function MetricRow({ metric, value, onChange }) {
 
   return (
     <div className="rounded-xl bg-slate-800/60 px-3 py-2.5">
-      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-        <span className="text-sm text-slate-200">{metric.name}</span>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-nowrap items-center justify-between gap-2">
+        <span className="min-w-0 flex-1 truncate whitespace-nowrap text-sm text-slate-200">
+          {metric.name}
+        </span>
+        <div className="flex shrink-0 items-center gap-2">
           <span className="font-mono text-sm tabular-nums">
             {show(metric, value)}
             {metric.id !== "visionAcuity" && (
@@ -81,7 +83,7 @@ function MetricsPanel({ metrics = [], values = {}, onChange }) {
     <div className="flex h-full min-h-0 flex-col rounded-2xl bg-slate-900 p-4 text-white">
       <h2 className="mb-3 shrink-0 text-sm font-semibold">Metrics</h2>
 
-      <div className="grid max-h-[560px] min-h-0 flex-1 content-start gap-2 overflow-y-auto pr-1 md:grid-cols-2 lg:max-h-none 2xl:grid-cols-3">
+      <div className="grid min-h-0 flex-1 content-start gap-2 overflow-y-auto pr-2 md:grid-cols-2 2xl:grid-cols-3">
         {metrics.map((m) => (
           <MetricRow
             key={m.id}
