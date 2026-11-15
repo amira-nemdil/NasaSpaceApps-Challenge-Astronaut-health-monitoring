@@ -187,6 +187,93 @@
   height: auto;
 }
 
+.space-app {
+  background-image:
+    radial-gradient(ellipse at 86% 16%, rgb(81 73 160 / 18%), transparent 32%),
+    radial-gradient(ellipse at 8% 72%, rgb(25 117 132 / 12%), transparent 34%);
+}
+
+.space-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 11;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.space-backdrop::before {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  content: "";
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 70%) 50%, transparent 100%),
+    radial-gradient(1px 1px at 68% 12%, rgb(190 213 255 / 75%) 50%, transparent 100%),
+    radial-gradient(1px 1px at 91% 52%, rgb(255 255 255 / 65%) 50%, transparent 100%),
+    radial-gradient(1px 1px at 23% 69%, rgb(190 213 255 / 65%) 50%, transparent 100%);
+  background-size: 290px 260px, 360px 330px, 410px 370px, 330px 310px;
+}
+
+.space-planet {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  opacity: 0.28;
+}
+
+.space-planet--ringed {
+  top: 13vh;
+  right: 2%;
+  width: clamp(72px, 8vw, 112px);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(ellipse at 30% 27%, rgb(255 255 255 / 38%), transparent 13%),
+    radial-gradient(ellipse at 34% 30%, #c39bde 0, #795cae 31%, #453d7e 65%, #202448 100%);
+  box-shadow: inset -13px -8px 20px rgb(3 5 24 / 68%), 0 0 32px rgb(129 104 219 / 18%);
+}
+
+.space-planet--ringed::after {
+  position: absolute;
+  inset: 38% -22%;
+  border: 2px solid rgb(194 178 245 / 60%);
+  border-radius: 50%;
+  content: "";
+  transform: rotate(-24deg);
+}
+
+.space-planet--distant {
+  top: 58vh;
+  left: 2%;
+  width: clamp(42px, 5vw, 66px);
+  aspect-ratio: 1;
+  opacity: 0.22;
+  background: radial-gradient(circle at 30% 27%, #d2e7dd 0, #76a99b 32%, #3b6670 68%, #1d354a 100%);
+  box-shadow: inset -8px -6px 13px rgb(3 5 24 / 70%), 0 0 24px rgb(101 196 190 / 16%);
+}
+
+.space-planet--tiny {
+  right: 15%;
+  bottom: 9vh;
+  width: 28px;
+  aspect-ratio: 1;
+  opacity: 0.24;
+  background: radial-gradient(circle at 30% 27%, #f5d6a2 0, #bd8c68 35%, #594766 74%, #28233e 100%);
+  box-shadow: inset -5px -4px 8px rgb(3 5 24 / 72%), 0 0 18px rgb(211 166 125 / 14%);
+}
+
+@media (max-width: 640px) {
+  .space-planet--ringed {
+    top: 14vh;
+    right: -24px;
+    opacity: 0.22;
+  }
+
+  .space-planet--distant {
+    left: -15px;
+    opacity: 0.16;
+  }
+}
+
 .ticks {
   position: relative;
   width: 100%;
