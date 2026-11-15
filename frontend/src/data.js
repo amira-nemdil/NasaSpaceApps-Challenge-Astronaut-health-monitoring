@@ -33,7 +33,7 @@ export const METRICS = [
     normal: [30, 250], warning: [[20, 29]], critical: [['<', 20]],
     advice: {
       warning: 'Take a short break and do 5 minutes of slow breathing.',
-      critical: 'Stop non-essential tasks, rest, and talk to a crewmate or the flight surgeon.',
+      critical: 'Stop non-essential tasks now, get a full sleep cycle and talk to a crewmate or the flight surgeon.',
     }
   },
   {
@@ -121,15 +121,17 @@ export const METRICS = [
       critical: 'Start the full daily resistance protocol and report to the flight surgeon.',
     }
   },
-  {
-    id: 'visionAcuity', name: 'Vision acuity (20/X)', unit: 'X', part: 'head',
-    min: 15, max: 100, step: 5, default: 20,
-    normal: [15, 20], warning: [[25, 40]], critical: [['>', 40]],
-    advice: {
-      warning: 'Re-test your vision and log any blurring.',
-      critical: 'Report the vision change to the flight surgeon immediately.',
-    }
-  },
+
+    {
+  id: 'visionAcuity', name: 'Vision acuity (20/X)', unit: 'X', part: 'head',
+  min: 15, max: 100, step: 5, default: 20,
+  normal: [15, 20], warning: [[25, 40]], critical: [['>', 40]],
+  advice: {
+    warning: 'Rest your eyes from screens, use eye drops, and put on your glasses.',
+    critical: 'Stop visual tasks, wear your glasses and call the flight surgeon.'
+  }
+},
+  
   {
     id: 'weight', name: 'Weight loss', unit: '% loss', part: 'chest',
     min: 0, max: 20, step: 0.1, default: 0,
