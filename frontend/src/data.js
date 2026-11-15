@@ -3,8 +3,8 @@ export const METRICS = [
     min: 0, max: 10, step: 1, default: 0,
     normal: [0, 0], warning: [[1, 6]], critical: [['>=', 7]],
     advice: {
-      warning: 'close the eyes and relaxe ,drink water and re-check in 30 minutes.',
-      critical: 'Stop tasks, take a medicament "paracetamol" and rest.',
+      warning: 'Rest, drink water and re-check in 30 minutes.',
+      critical: 'Stop tasks, rest, and contact the flight surgeon.',
     } },
   { id: 'sleepLoss', name: 'Sleep deficit', unit: 'h', part: 'head',
     min: 0, max: 24, step: 1, default: 0,
@@ -31,54 +31,67 @@ export const METRICS = [
     min: 4, max: 40, step: 1, default: 16,
     normal: [12, 20], warning: [[21, 24]], critical: [['<', 12], ['>=', 25]],
     advice: {
-      warning: 'Slow your breathing, check cabin air and re-measure.',
-      critical: 'Check the cabin atmosphere now, rest, and contact the flight surgeon.',
+      warning: 'Slow your breathing, You need to relax and stretch your body.',
+      critical: 'Check the cabin atmosphere now, relax ,bending your knees..',
     } },
   { id: 'energy', name: 'Energy level', unit: '%', part: 'legs',
     min: 0, max: 100, step: 1, default: 80,
     normal: [51, 100], warning: [[26, 50]], critical: [['<=', 25]],
     advice: {
-      warning: 'Rest, eat, and reduce your workload.',
-      critical: 'Take a long rest and limit work to essential tasks.',
+      warning: ' Take food with carbohydrates like Oats ,Whole-Grain Toast or bananas to prevent a sudden drop.',
+      critical: 'Take a long rest and take Fruit Juice,honey,or dried fruit that contain glucose.',
     } },
 
-  { id: 'diversity', name: 'Microbiome diversity', unit: 'score', part: 'chest',
+  { 
+    id: 'diversity', name: 'Microbiome diversity', unit: 'score', part: 'chest',
     min: 0, max: 100, step: 1, default: 80,
     normal: [70, 100], warning: [[20, 69]], critical: [['<', 20]],
     advice: {
-      warning: 'Add fibre-rich and fermented foods to meals.',
-      critical: 'Review diet and recent medication with the flight surgeon.',
-    } },
-  { id: 'proteobacteria', name: 'Proteobacteria', unit: '%', part: 'chest',
+      warning: 'Eat more types of vegetables and add fermented foods like yogurt or kefir to your meals.',
+      critical: 'Take a daily probiotic supplement and see the flight surgeon to check your gut health.'
+    } 
+  },
+  { 
+    id: 'proteobacteria', name: 'Proteobacteria', unit: '%', part: 'chest',
     min: 0, max: 100, step: 0.1, default: 2,
     normal: [0, 4.9], warning: [[5, 10]], critical: [['>', 10]],
     advice: {
-      warning: 'Review diet, cut processed food, and re-test later.',
-      critical: 'Report possible gut inflammation to the flight surgeon.',
-    } },
-  { id: 'akkermansia', name: 'Akkermansia', unit: '%', part: 'chest',
+      warning: 'Cut out sugary and highly processed foods immediately. Eat more high-fiber foods like oats and beans.',
+      critical: 'Report to the flight surgeon immediately for a gut infection test. You may need antibiotics.'
+    } 
+  },
+  { 
+    id: 'akkermansia', name: 'Akkermansia', unit: '%', part: 'chest',
     min: 0, max: 5, step: 0.1, default: 2.5,
     normal: [1, 5], warning: [[0.1, 0.9]], critical: [['<', 0.1]],
     advice: {
-      warning: 'Review diet and add fibre-rich foods.',
-      critical: 'Report to the flight surgeon and review diet and metabolic health.',
-    } },
+      warning: 'Drink green tea and eat dark berries like cranberries or pomegranates to help these good bacteria grow.',
+      critical: 'Take an Akkermansia probiotic supplement, try skipping a meal (fasting), and check your blood sugar with the flight surgeon.'
+    } 
+  },
 
   { id: 'rbc', name: 'Red blood cells', unit: '10^6/uL', part: 'heart',
     min: 1, max: 8, step: 0.1, default: 4.8,
     normal: [4.0, 5.9], warning: [[2.5, 3.9], [6.0, 6.5]], critical: [['<', 2.5], ['>', 6.5]],
     advice: {
-      warning: ' Take B12 ,Iron vitamines (fish,meat ,beans) , or Take Biotary Supplement.',
-      // critical: 'Contact the flight surgeon: possible anemia or dehydration.',
-      critical: 'Take Erythropoietin (EPO).',
+      warning: 'Re-test and check hydration and iron intake.',
+      critical: 'Contact the flight surgeon: possible anemia or dehydration.',
     } },
   { id: 'wbc', name: 'White blood cells', unit: '10^3/uL', part: 'heart',
     min: 0, max: 40, step: 0.1, default: 7.5,
     normal: [4.5, 11.0], warning: [[2.0, 4.4], [11.1, 30.0]], critical: [['<', 2.0], ['>', 30.0]],
     advice: {
-      warning: 'Eat  Meats ,fishes and Poultry or Lentils (for containing vit b6,b12 ,zinc,iron ).',
-      critical: ' Take antibiotique, antivirus plus isolate from any source of danger.',
+      warning: 'Re-test and watch for fever or signs of infection.',
+      critical: 'Contact the flight surgeon: possible infection or immune problem.',
     } },
+  { id: 'igg', name: 'Immunoglobulin G', unit: 'mg/dL', part: 'heart',
+    min: 0, max: 4000, step: 10, default: 1100,
+    normal: [700, 1600], warning: [[400, 699], [1601, 3000]], critical: [['<', 400], ['>', 3000]],
+    advice: {
+      warning: 'Re-test, avoid sick contacts, and watch for signs of infection.',
+      critical: 'Contact the flight surgeon: immune function may be impaired.',
+    } },
+
   { id: 'dizziness', name: 'Dizziness', unit: '0-10', part: 'head',
     min: 0, max: 10, step: 1, default: 0,
     normal: [0, 0], warning: [[1, 3]], critical: [['>=', 4]],
