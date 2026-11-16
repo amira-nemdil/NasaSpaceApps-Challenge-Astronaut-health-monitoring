@@ -1,0 +1,496 @@
+{
+  "created_at": "2026-11-16T02:28:40.499500+00:00",
+  "participants": 22,
+  "windows": 5949,
+  "threshold_percentile": 0.99,
+  "source_quality": {
+    "user_1": {
+      "raw_rows": 67936,
+      "candidate_windows": 282,
+      "accepted_windows": 277
+    },
+    "user_2": {
+      "raw_rows": 60862,
+      "candidate_windows": 268,
+      "accepted_windows": 244
+    },
+    "user_3": {
+      "raw_rows": 67772,
+      "candidate_windows": 282,
+      "accepted_windows": 276
+    },
+    "user_4": {
+      "raw_rows": 64796,
+      "candidate_windows": 276,
+      "accepted_windows": 262
+    },
+    "user_5": {
+      "raw_rows": 65054,
+      "candidate_windows": 274,
+      "accepted_windows": 265
+    },
+    "user_6": {
+      "raw_rows": 67400,
+      "candidate_windows": 281,
+      "accepted_windows": 274
+    },
+    "user_7": {
+      "raw_rows": 68714,
+      "candidate_windows": 284,
+      "accepted_windows": 280
+    },
+    "user_8": {
+      "raw_rows": 61678,
+      "candidate_windows": 269,
+      "accepted_windows": 243
+    },
+    "user_9": {
+      "raw_rows": 64121,
+      "candidate_windows": 273,
+      "accepted_windows": 263
+    },
+    "user_10": {
+      "raw_rows": 58616,
+      "candidate_windows": 249,
+      "accepted_windows": 236
+    },
+    "user_11": {
+      "raw_rows": 68362,
+      "candidate_windows": 287,
+      "accepted_windows": 281
+    },
+    "user_12": {
+      "raw_rows": 68739,
+      "candidate_windows": 285,
+      "accepted_windows": 282
+    },
+    "user_13": {
+      "raw_rows": 67350,
+      "candidate_windows": 281,
+      "accepted_windows": 277
+    },
+    "user_14": {
+      "raw_rows": 67995,
+      "candidate_windows": 281,
+      "accepted_windows": 278
+    },
+    "user_15": {
+      "raw_rows": 71045,
+      "candidate_windows": 303,
+      "accepted_windows": 289
+    },
+    "user_16": {
+      "raw_rows": 69850,
+      "candidate_windows": 290,
+      "accepted_windows": 285
+    },
+    "user_17": {
+      "raw_rows": 68351,
+      "candidate_windows": 288,
+      "accepted_windows": 276
+    },
+    "user_18": {
+      "raw_rows": 65911,
+      "candidate_windows": 281,
+      "accepted_windows": 269
+    },
+    "user_19": {
+      "raw_rows": 68326,
+      "candidate_windows": 283,
+      "accepted_windows": 279
+    },
+    "user_20": {
+      "raw_rows": 64740,
+      "candidate_windows": 277,
+      "accepted_windows": 265
+    },
+    "user_21": {
+      "raw_rows": 67186,
+      "candidate_windows": 278,
+      "accepted_windows": 272
+    },
+    "user_22": {
+      "raw_rows": 67874,
+      "candidate_windows": 282,
+      "accepted_windows": 276
+    }
+  },
+  "source_sha256": {
+    "user_1\\Actigraph.csv": "dd3a68eb3751978fa5af610c04f2d3429c7f5f3c0a615e3614a05155b382664e",
+    "user_2\\Actigraph.csv": "fddc770d4413f3dc87d006b7c4eaaafac3e0392c80cab7642ffef7fb037408f9",
+    "user_3\\Actigraph.csv": "eef0583c76cc92ff850b3416d7c0ea5f926c64a8f3241d201124a47df58ad0a5",
+    "user_4\\Actigraph.csv": "912114d12e34c6cf3c689c05123d5e70c1659cc73a9f7b047f444b7fc849a463",
+    "user_5\\Actigraph.csv": "6c340294d151053af952baec524d6d570ea805dd6b50a245a9221b3b4f494a22",
+    "user_6\\Actigraph.csv": "02febc1647fc745c87dd23911ec673bbc5ee11c28250af08b49a1db3a20e1e46",
+    "user_7\\Actigraph.csv": "75dc2719d36ce1cde806150c2914083242e2d529748448615bf5cabf9c8157ba",
+    "user_8\\Actigraph.csv": "65a83c24bbf9d9a6315cef489dcfe9ae714900bc62e54152ff305625cfc66e10",
+    "user_9\\Actigraph.csv": "feb6c3a5a1631bf84e8723deb3f485a25c4bc74cce061c5c42a1d0b597afa19b",
+    "user_10\\Actigraph.csv": "5e2b78305d50db295a1593a9bd132d6a17d0db7fd79bcee5ec2f24758d4507a8",
+    "user_11\\Actigraph.csv": "91994de2d80cc78d8ab83e6c083327d8f1472616ba663251fcb2df66cd61a115",
+    "user_12\\Actigraph.csv": "32b34510591cbadda724388de9cebde4dd8a4cd8c9874fc9876c78de402b3b96",
+    "user_13\\Actigraph.csv": "5c1174fca58ecf40a2043124d1552c5416e8eb23beeb4c5443280d631a1c490c",
+    "user_14\\Actigraph.csv": "46f1c194b0cfeafa3b0018811c32ec451e7458d98c45b89bbeab8aace4406c5e",
+    "user_15\\Actigraph.csv": "91d8ea25a22a263dbae1738cef1ab6ed37ddac124e27bc687629e3cafefac520",
+    "user_16\\Actigraph.csv": "2967b5e1a68cb78a03eae25c62e02bad40a1aa29e7d7f33092848a457411bc0d",
+    "user_17\\Actigraph.csv": "fca49befed71ae0d9bbb24bd21b3be913ca35f27d8376b7c2a20bc53159f3ffa",
+    "user_18\\Actigraph.csv": "b019760fd1489d1f9441384703d1cab1f702d01c9bb6fc03b91aeada464c5fc4",
+    "user_19\\Actigraph.csv": "2779061e57cdf2fbaa111749f1956af5261e0893bbc0ae10e09b457b056d869b",
+    "user_20\\Actigraph.csv": "8e1e421079e0882a87bcafdf6c981d2946193c2bb90d97dccf62236fc8cd0712",
+    "user_21\\Actigraph.csv": "48a9427c6ef7071c7df876eda105ea7b4e012feeaa15c07d34ec40897d04d9b5",
+    "user_22\\Actigraph.csv": "c6cd6eccdded45b240320ad629c3cfb5b06bda8f395a0a78b22a4c516a690249"
+  },
+  "evaluation_script_sha256": "a76014767364b2db87b59e7e780a03e6c912c1f148b6ef7cd6cbc16b7f1e34cc",
+  "runs": [
+    {
+      "seed": 42,
+      "participant_splits": {
+        "train": [
+          "user_8",
+          "user_7",
+          "user_10",
+          "user_4",
+          "user_1",
+          "user_19",
+          "user_6",
+          "user_12",
+          "user_15",
+          "user_21",
+          "user_3",
+          "user_5",
+          "user_20",
+          "user_2",
+          "user_14",
+          "user_9"
+        ],
+        "calibration": [
+          "user_22",
+          "user_13",
+          "user_16"
+        ],
+        "test": [
+          "user_18",
+          "user_11",
+          "user_17"
+        ]
+      },
+      "window_counts": {
+        "train": 4285,
+        "calibration": 838,
+        "test": 826
+      },
+      "held_out_test": {
+        "score_count": 826,
+        "mean_anomaly_percentile": 0.5427181632735615,
+        "median_anomaly_percentile": 0.5710023866348448,
+        "flagged_fraction_at_threshold": 0.006053268765133172
+      },
+      "per_participant": [
+        {
+          "participant": "user_11",
+          "windows": 281,
+          "flagged": 1,
+          "alert_fraction": 0.0035587188612099642
+        },
+        {
+          "participant": "user_17",
+          "windows": 276,
+          "flagged": 2,
+          "alert_fraction": 0.007246376811594203
+        },
+        {
+          "participant": "user_18",
+          "windows": 269,
+          "flagged": 2,
+          "alert_fraction": 0.007434944237918215
+        }
+      ],
+      "synthetic_perturbation_flag_fraction": 1.0,
+      "reference_deviation_baseline": {
+        "reference_alert_fraction": 0.11138014527845036,
+        "synthetic_perturbation_flag_fraction": 1.0,
+        "threshold": "maximum absolute robust feature deviation >= 3; illustrative comparator"
+      }
+    },
+    {
+      "seed": 43,
+      "participant_splits": {
+        "train": [
+          "user_20",
+          "user_3",
+          "user_14",
+          "user_9",
+          "user_7",
+          "user_21",
+          "user_12",
+          "user_17",
+          "user_19",
+          "user_10",
+          "user_15",
+          "user_18",
+          "user_5",
+          "user_16",
+          "user_1",
+          "user_4"
+        ],
+        "calibration": [
+          "user_8",
+          "user_22",
+          "user_11"
+        ],
+        "test": [
+          "user_6",
+          "user_2",
+          "user_13"
+        ]
+      },
+      "window_counts": {
+        "train": 4354,
+        "calibration": 800,
+        "test": 795
+      },
+      "held_out_test": {
+        "score_count": 795,
+        "mean_anomaly_percentile": 0.4855597484276729,
+        "median_anomaly_percentile": 0.49125,
+        "flagged_fraction_at_threshold": 0.011320754716981131
+      },
+      "per_participant": [
+        {
+          "participant": "user_13",
+          "windows": 277,
+          "flagged": 2,
+          "alert_fraction": 0.007220216606498195
+        },
+        {
+          "participant": "user_2",
+          "windows": 244,
+          "flagged": 5,
+          "alert_fraction": 0.020491803278688523
+        },
+        {
+          "participant": "user_6",
+          "windows": 274,
+          "flagged": 2,
+          "alert_fraction": 0.0072992700729927005
+        }
+      ],
+      "synthetic_perturbation_flag_fraction": 1.0,
+      "reference_deviation_baseline": {
+        "reference_alert_fraction": 0.13962264150943396,
+        "synthetic_perturbation_flag_fraction": 1.0,
+        "threshold": "maximum absolute robust feature deviation >= 3; illustrative comparator"
+      }
+    },
+    {
+      "seed": 44,
+      "participant_splits": {
+        "train": [
+          "user_5",
+          "user_17",
+          "user_14",
+          "user_11",
+          "user_13",
+          "user_9",
+          "user_22",
+          "user_4",
+          "user_12",
+          "user_18",
+          "user_3",
+          "user_6",
+          "user_2",
+          "user_15",
+          "user_7",
+          "user_8"
+        ],
+        "calibration": [
+          "user_21",
+          "user_16",
+          "user_19"
+        ],
+        "test": [
+          "user_1",
+          "user_20",
+          "user_10"
+        ]
+      },
+      "window_counts": {
+        "train": 4335,
+        "calibration": 836,
+        "test": 778
+      },
+      "held_out_test": {
+        "score_count": 778,
+        "mean_anomaly_percentile": 0.5356822179308988,
+        "median_anomaly_percentile": 0.5586124401913876,
+        "flagged_fraction_at_threshold": 0.010282776349614395
+      },
+      "per_participant": [
+        {
+          "participant": "user_1",
+          "windows": 277,
+          "flagged": 2,
+          "alert_fraction": 0.007220216606498195
+        },
+        {
+          "participant": "user_10",
+          "windows": 236,
+          "flagged": 2,
+          "alert_fraction": 0.00847457627118644
+        },
+        {
+          "participant": "user_20",
+          "windows": 265,
+          "flagged": 4,
+          "alert_fraction": 0.01509433962264151
+        }
+      ],
+      "synthetic_perturbation_flag_fraction": 1.0,
+      "reference_deviation_baseline": {
+        "reference_alert_fraction": 0.12467866323907455,
+        "synthetic_perturbation_flag_fraction": 1.0,
+        "threshold": "maximum absolute robust feature deviation >= 3; illustrative comparator"
+      }
+    },
+    {
+      "seed": 45,
+      "participant_splits": {
+        "train": [
+          "user_2",
+          "user_19",
+          "user_11",
+          "user_17",
+          "user_9",
+          "user_16",
+          "user_13",
+          "user_10",
+          "user_3",
+          "user_22",
+          "user_4",
+          "user_8",
+          "user_1",
+          "user_6",
+          "user_18",
+          "user_20"
+        ],
+        "calibration": [
+          "user_21",
+          "user_12",
+          "user_14"
+        ],
+        "test": [
+          "user_5",
+          "user_15",
+          "user_7"
+        ]
+      },
+      "window_counts": {
+        "train": 4283,
+        "calibration": 832,
+        "test": 834
+      },
+      "held_out_test": {
+        "score_count": 834,
+        "mean_anomaly_percentile": 0.5931764204021398,
+        "median_anomaly_percentile": 0.6141826923076923,
+        "flagged_fraction_at_threshold": 0.050359712230215826
+      },
+      "per_participant": [
+        {
+          "participant": "user_15",
+          "windows": 289,
+          "flagged": 27,
+          "alert_fraction": 0.09342560553633218
+        },
+        {
+          "participant": "user_5",
+          "windows": 265,
+          "flagged": 3,
+          "alert_fraction": 0.011320754716981131
+        },
+        {
+          "participant": "user_7",
+          "windows": 280,
+          "flagged": 12,
+          "alert_fraction": 0.04285714285714286
+        }
+      ],
+      "synthetic_perturbation_flag_fraction": 1.0,
+      "reference_deviation_baseline": {
+        "reference_alert_fraction": 0.19304556354916066,
+        "synthetic_perturbation_flag_fraction": 1.0,
+        "threshold": "maximum absolute robust feature deviation >= 3; illustrative comparator"
+      }
+    },
+    {
+      "seed": 46,
+      "participant_splits": {
+        "train": [
+          "user_19",
+          "user_14",
+          "user_15",
+          "user_3",
+          "user_5",
+          "user_10",
+          "user_13",
+          "user_18",
+          "user_21",
+          "user_7",
+          "user_17",
+          "user_9",
+          "user_6",
+          "user_12",
+          "user_16",
+          "user_4"
+        ],
+        "calibration": [
+          "user_1",
+          "user_2",
+          "user_8"
+        ],
+        "test": [
+          "user_20",
+          "user_22",
+          "user_11"
+        ]
+      },
+      "window_counts": {
+        "train": 4363,
+        "calibration": 764,
+        "test": 822
+      },
+      "held_out_test": {
+        "score_count": 822,
+        "mean_anomaly_percentile": 0.4575292034496375,
+        "median_anomaly_percentile": 0.4410994764397906,
+        "flagged_fraction_at_threshold": 0.0024330900243309003
+      },
+      "per_participant": [
+        {
+          "participant": "user_11",
+          "windows": 281,
+          "flagged": 0,
+          "alert_fraction": 0.0
+        },
+        {
+          "participant": "user_20",
+          "windows": 265,
+          "flagged": 2,
+          "alert_fraction": 0.007547169811320755
+        },
+        {
+          "participant": "user_22",
+          "windows": 276,
+          "flagged": 0,
+          "alert_fraction": 0.0
+        }
+      ],
+      "synthetic_perturbation_flag_fraction": 1.0,
+      "reference_deviation_baseline": {
+        "reference_alert_fraction": 0.11557177615571776,
+        "synthetic_perturbation_flag_fraction": 1.0,
+        "threshold": "maximum absolute robust feature deviation >= 3; illustrative comparator"
+      }
+    }
+  ],
+  "interpretation": "Alert rates on healthy terrestrial reference data and responses to artificial perturbations only. No medical outcome labels, sensitivity/specificity, astronaut validation or clinical accuracy established. Windows within a person are correlated; repeated splits reuse participants and are not independent cohorts."
+}

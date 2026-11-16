@@ -1,20 +1,23 @@
-import { getLevel } from "../status.js";
+import { getLevel } from '../status.js';
 
 const BADGE = {
-  normal: "bg-sky-400/20 text-sky-200",
-  warning: "bg-amber-400/20 text-amber-200",
-  critical: "bg-rose-400/20 text-rose-200",
+  unknown: 'bg-slate-700 text-slate-100',
+  normal: 'bg-sky-400/20 text-sky-200',
+  warning: 'bg-amber-400/20 text-amber-200',
+  critical: 'bg-rose-400/20 text-rose-200',
 };
 
 const ZONE = {
-  normal: "bg-sky-400/70",
-  warning: "bg-amber-400/70",
-  critical: "bg-rose-500/70",
+  unknown: 'bg-slate-500',
+  normal: 'bg-sky-400/70',
+  warning: 'bg-amber-400/70',
+  critical: 'bg-rose-500/70',
 };
 
 const SEGMENTS = 40;
 
-const show = (metric, v) => (metric.id === "visionAcuity" ? `20/${v}` : v);
+const show = (metric, v) =>
+  metric.id === 'visionAcuity' ? `20/${v}` : Number(v.toFixed(2));
 
 function ZoneStrip({ metric }) {
   const cells = [];
@@ -33,13 +36,16 @@ function MetricRow({ metric, value, onChange }) {
   return (
     <div className="rounded-xl bg-slate-800/60 px-3 py-2.5">
       <div className="flex flex-nowrap items-center justify-between gap-2">
-        <span className="min-w-0 flex-1 truncate whitespace-nowrap text-sm text-slate-200">
+        <label
+          htmlFor={`metric-${metric.id}`}
+          className="min-w-0 flex-1 text-sm text-slate-200"
+        >
           {metric.name}
-        </span>
+        </label>
         <div className="flex shrink-0 items-center gap-2">
           <span className="font-mono text-sm tabular-nums">
             {show(metric, value)}
-            {metric.id !== "visionAcuity" && (
+            {metric.id !== 'visionAcuity' && (
               <span className="ml-1 text-xs text-slate-500">{metric.unit}</span>
             )}
           </span>
@@ -51,6 +57,7 @@ function MetricRow({ metric, value, onChange }) {
           <button
             onClick={() => onChange(metric.id, metric.default)}
             title="Reset to default"
+            aria-label={`Reset ${metric.name}`}
             className="rounded-md bg-slate-700 px-1.5 py-0.5 text-xs text-slate-300 hover:bg-slate-600"
           >
             ↺
@@ -59,7 +66,9 @@ function MetricRow({ metric, value, onChange }) {
       </div>
 
       <input
+        id={`metric-${metric.id}`}
         type="range"
+        aria-valuetext={`${show(metric, value)} ${metric.unit}; ${level}`}
         min={metric.min}
         max={metric.max}
         step={metric.step}
@@ -80,10 +89,10 @@ function MetricRow({ metric, value, onChange }) {
 
 function MetricsPanel({ metrics = [], values = {}, onChange }) {
   return (
-    <div className="flex h-full min-h-0 flex-col rounded-2xl bg-slate-900 p-4 text-white">
+    <div className="flex min-h-0 flex-col rounded-2xl bg-slate-900 p-4 text-white">
       <h2 className="mb-3 shrink-0 text-sm font-semibold">Metrics</h2>
 
-      <div className="grid min-h-0 flex-1 content-start gap-2 overflow-y-auto pr-2 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="metric-scroll grid min-h-0 content-start gap-2 md:grid-cols-2">
         {metrics.map((m) => (
           <MetricRow
             key={m.id}

@@ -5,6 +5,7 @@ FastAPI runs locally on `http://127.0.0.1:8000`. Interactive specification: `/do
 | Method | Route | Description |
 |---|---|---|
 | GET | `/api/health` | Service status and `synthetic: true` |
+| GET | `/api/ready` | Inference-checked model readiness, model SHA256/version and app revision; HTTP 503 if unavailable |
 | GET | `/api/crew?scenario=nominal` | Three fictitious crew profiles and day-14 prototype status |
 | GET | `/api/crew/crew-01?scenario=sleep_debt` | Crew info, baseline, 14-day simulated telemetry + review drivers |
 | GET | `/api/space-weather` | Optional NASA DONKI SEP event report metadata |
@@ -45,11 +46,13 @@ Important keys for the individual crew endpoint:
 
 This example is **illustrative and abbreviated**, not an exact captured endpoint payload; the response includes 14 full records. Inspect `/docs` or `curl` the running service for exact data.
 
-`/api/space-weather` returns `available`, `events`, `window`, `data_source`, and `important`. If NASA is unreachable, it returns `available: false` and `events: []`; **no fabricated live events**.
+`/api/space-weather` returns `available`, `events`, `window`, `data_source`, `important`, `fetched_at`, `cached`, and `stale`. Successful lookups are cached for five minutes per process; failures have a one-minute retry cooldown. If NASA is unreachable and no saved reports exist it returns `available: false` and `events: []`. A previously successful response can be returned with `stale: true`, its original retrieval time and an error explanation; **no fabricated live events**.
 
 ## MMASH model scoring
 
 `POST /api/ml/score` accepts one summarized five-minute sensor window. The backend derives logarithmic activity features and cyclic time-of-day features before applying the saved preprocessing and Isolation Forest pipeline.
+
+`timestamp` is the **midpoint** of that window in the crew member's local/mission clock with an explicit timezone offset. Offset-free timestamps and non-finite inputs are rejected. A real ingestion adapter must calculate coverage from distinct valid epochs and calibrate device-specific movement units before submitting aggregates.
 
 ```json
 {

@@ -8,8 +8,8 @@ or establish flight-medical risk.
 from __future__ import annotations
 
 import math
+import hashlib
 import os
-from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
@@ -17,7 +17,7 @@ from typing import Any, Literal
 import joblib
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field, ConfigDict
 
 
 MODEL_FEATURES = (
@@ -54,8 +54,9 @@ class InsufficientDataError(ModelRuntimeError):
 class ModelScoreRequest(BaseModel):
     """One aggregate five-minute wearable-sensor window."""
 
+    model_config = ConfigDict(allow_inf_nan=False)
     crew_id: str = Field(min_length=1, max_length=80)
-    timestamp: datetime
+    timestamp: AwareDatetime = Field(description="Midpoint of the five-minute window in the crew member's local/mission clock, with an explicit offset.")
     window_minutes: Literal[5] = 5
     heart_rate_mean_bpm: float = Field(ge=20, le=260)
     heart_rate_std_bpm: float = Field(ge=0, le=100)
@@ -106,7 +107,7 @@ def resolve_model_path(path: str | Path | None = None) -> Path:
 
 
 @lru_cache(maxsize=4)
-def _load_artifact_cached(path_string: str) -> dict[str, Any]:
+def _load_artifact_cached(path_string: str, signature: tuple[int, int]) -> dict[str, Any]:
     path = Path(path_string)
     if not path.is_file():
         raise ModelArtifactNotFoundError(
@@ -115,6 +116,9 @@ def _load_artifact_cached(path_string: str) -> dict[str, Any]:
         )
 
     # joblib/pickle artifacts must only be loaded from this trusted project.
+    expected = os.getenv("ASTROPULSE_MODEL_SHA256")
+    if expected and hashlib.sha256(path.read_bytes()).hexdigest() != expected.lower():
+        raise InvalidModelArtifactError("Model artifact checksum does not match the configured release.")
     try:
         artifact = joblib.load(path)
     except Exception as exc:  # pragma: no cover - the exact joblib error varies
@@ -162,7 +166,12 @@ def _load_artifact_cached(path_string: str) -> dict[str, Any]:
 def load_model_artifact(path: str | Path | None = None) -> dict[str, Any]:
     """Load and validate the trusted local model artifact."""
 
-    return _load_artifact_cached(str(resolve_model_path(path)))
+    path = resolve_model_path(path)
+    try:
+        stat = path.stat()
+    except OSError as exc:
+        raise ModelArtifactNotFoundError("The trained model is not installed.") from exc
+    return _load_artifact_cached(str(path), (stat.st_mtime_ns, stat.st_size))
 
 
 def clear_model_cache() -> None:

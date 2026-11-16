@@ -29,7 +29,7 @@ For a given synthetic astronaut and signal \(x\):
 
 The optional model uses [MMASH v1.0.0](https://physionet.org/content/mmash/1.0.0/), an openly licensed reference dataset containing about 24 hours of wearable observations from 22 healthy young adult male participants on Earth. It is not astronaut, microgravity, clinical-patient, or multiweek mission data.
 
-The preprocessing script turns each participant's `Actigraph.csv` into non-overlapping five-minute windows. Windows with less than 60% valid heart-rate coverage are rejected. The fixed model vector contains:
+The preprocessing script turns each participant's `Actigraph.csv` into non-overlapping five-minute windows. Duplicate timestamps are removed before measuring coverage against distinct expected one-second epochs. Windows with less than 60% valid heart-rate coverage are rejected. The fixed model vector contains:
 
 1. mean heart rate in beats per minute;
 2. heart-rate standard deviation;
@@ -41,7 +41,7 @@ The preprocessing script turns each participant's `Actigraph.csv` into non-overl
 
 Missing values are imputed from the training split, features are robustly scaled, and an unsupervised Isolation Forest estimates how unusual a window is relative to MMASH. Participants, rather than neighboring sensor rows, are separated between training, calibration, and testing to reduce leakage.
 
-ActiGraph movement counts are device-specific, so a different wearable requires calibration before inference. The submitted timestamp represents the crew member's mission/local clock for the two daily-cycle features. `crew_id` routes the result to a profile but is not itself a model feature.
+ActiGraph movement counts are device-specific, so a different wearable requires calibration before inference. The submitted timestamp is the midpoint of the five-minute window, with an explicit offset, in the crew member's mission/local clock. `crew_id` routes the result to a profile but is not itself a model feature.
 
 The public `anomaly_score` is a held-out reference percentile of the model's rarity score. A value such as `0.99` means the window is at or above the 99th percentile of statistical rarity in that calibration set. It does **not** mean 99% probability of illness, emergency, or future harm. Reference deviations can suggest which observed features merit attention, but they are not native causal feature attributions from Isolation Forest.
 

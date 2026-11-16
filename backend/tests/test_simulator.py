@@ -45,13 +45,14 @@ def test_crew_api_returns_three_profiles():
 
 
 def test_space_weather_does_not_fabricate_events_when_offline(monkeypatch):
-    from app import main
+    from app import weather
     from urllib.error import URLError
 
     def offline(*args, **kwargs):
         raise URLError("offline")
 
-    monkeypatch.setattr(main, "urlopen", offline)
+    weather.clear_weather_cache()
+    monkeypatch.setattr(weather, "urlopen", offline)
     response = client.get("/api/space-weather")
     assert response.status_code == 200
     data = response.json()

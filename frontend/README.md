@@ -1,16 +1,9 @@
-# React + Vite
+# AstroPulse frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19, Vite, Tailwind CSS, and React Toastify. Run `npm ci`, then `npm run dev` with the FastAPI backend on port 8000. The development server proxies `/api` to that backend.
 
-Currently, two official plugins are available:
+`MissionHealth.jsx` renders FastAPI crew/baseline/model results; `SpaceWeather.jsx` renders optional NASA reports; `App.jsx` and `simulation.js` own the independent illustrative sandbox. The model artifact is never loaded in the browser. `storage.js` stores synthetic demo state only. The production service worker caches the static app shell; API snapshots are saved explicitly and labeled stale when reused.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Checks: `npm run lint`, `npm test`, `npm run build`, then `npm run test:e2e`. Browser tests use the built frontend and the real local model service. Install Chromium with `npx playwright install chromium` or set `PLAYWRIGHT_CHROME_EXECUTABLE` to an existing Chrome binary.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+See the [root README](../README.md) and [deployment guide](../docs/DEPLOYMENT.md) for the complete application.

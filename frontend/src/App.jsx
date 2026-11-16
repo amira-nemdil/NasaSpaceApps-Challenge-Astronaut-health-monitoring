@@ -1,609 +1,338 @@
-
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import Body from "./components/Body";
-import Simulator from "./components/Simulator";
-import HazardBar from "./components/HazardBar";
-import MetricsPanel from "./components/MetricsPanel";
-import Log from "./components/Log";
-
-import { METRICS, HAZARDS, LOCATIONS } from "./data.js";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Body from './components/Body';
+import Simulator from './components/Simulator';
+import HazardBar from './components/HazardBar';
+import MetricsPanel from './components/MetricsPanel';
+import Log from './components/Log';
+import MissionHealth from './components/MissionHealth';
+import SpaceWeather from './components/SpaceWeather';
+import { METRICS, HAZARDS, LOCATIONS } from './data.js';
 import {
   getLevels,
   hazardLevels,
   partLevels,
   diffLevels,
   formatValue,
-} from "./status.js";
-
-import "./App.css";
+} from './status.js';
+import {
+  SCENARIOS,
+  initialValues,
+  clampMetric,
+  restoreSimulation,
+  advanceSimulation,
+  applyAction,
+  missionClock,
+} from './simulation.js';
+import { readStorage, writeStorage } from './storage.js';
+import './App.css';
 
 const metricById = Object.fromEntries(METRICS.map((m) => [m.id, m]));
-const hazardById = Object.fromEntries(HAZARDS.map((h) => [h.id, h]));
-
-const now = () =>
-  new Date().toLocaleTimeString([], { hour12: false });
-
-// ---------------- SCENARIOS ----------------
-
-const SCENARIOS = [
+const actions = [
   {
-    id: "routine",
-    label: "Routine mission",
-    effects: {},
-  },
-  {
-    id: "radiation",
-    label: "Radiation exposure",
-    effects: {
-      headache: 0.15,
-      sleepLoss: 0.2,
-      stress: 1.5,
-      energy: -1.5,
-    },
-  },
-  {
-    id: "isolation",
-    label: "Isolation and confinement",
-    effects: {
-      sleepLoss: 0.25,
-      stress: 1.5,
-      energy: -1,
-      wbc: 0.1,
-    },
-  },
-  {
-    id: "microgravity",
-    label: "Microgravity effects",
-    effects: {
-      dizziness: 0.15,
-      boneMuscleLoss: 0.1,
-      energy: -1,
-    },
-  },
-];
-
-// ---------------- MANUAL ACTIONS ----------------
-
-const ACTIONS = [
-  {
-    id: "rest",
-    label: "Rest",
-    category: "routine",
+    id: 'rest',
+    label: 'Simulate rest',
+    category: 'routine',
     input: {
       default: 2,
       min: 1,
       max: 12,
       step: 1,
-      unit: "hours",
+      unit: 'hours',
+      label: 'Rest duration',
     },
   },
+  { id: 'hydrate', label: 'Simulate hydration', category: 'routine' },
+  { id: 'exercise', label: 'Simulate exercise', category: 'routine' },
+  { id: 'check', label: 'Log a simulated check-in', category: 'measure' },
   {
-    id: "hydrate",
-    label: "Hydrate",
-    category: "routine",
-  },
-  {
-    id: "exercise",
-    label: "Exercise",
-    category: "routine",
-  },
-  {
-    id: "check",
-    label: "Medical check",
-    category: "measure",
-  },
-  {
-    id: "treatment",
-    label: "Medical response",
-    category: "response",
+    id: 'review',
+    label: 'Log review request',
+    category: 'response',
+    description:
+      'Records a demo request locally. No message is sent to a medical team.',
   },
 ];
 
-// ---------------- HELPERS ----------------
+function appendLog(state, items) {
+  return {
+    ...state,
+    log: [
+      ...state.log,
+      ...items.map((entry) => ({
+        id: crypto.randomUUID(),
+        clock: new Date().toLocaleTimeString([], { hour12: false }),
+        missionTime: missionClock(state.elapsedMinutes),
+        ...entry,
+      })),
+    ].slice(-200),
+  };
+}
 
-function notify(type, title, text) {
-  toast[type](
-    <div>
-      <div className="font-semibold">{title}</div>
-      <div className="text-xs opacity-90">{text}</div>
-    </div>
+export default function App() {
+  const [session, setSession] = useState(() =>
+    restoreSimulation(readStorage('simulation')),
   );
-}
-
-function createInitialValues() {
-  return Object.fromEntries(METRICS.map((m) => [m.id, m.default]));
-}
-
-function clampMetric(id, value) {
-  const metric = metricById[id];
-
-  if (!metric) return value;
-
-  return Math.min(metric.max, Math.max(metric.min, value));
-}
-
-function App() {
-  // ---------------- MAIN STATE ----------------
-
-  const [values, setValues] = useState(createInitialValues);
-
-  const [location, setLocation] = useState("station");
-
-  const [log, setLog] = useState(() => [
-    {
-      id: 0,
-      clock: now(),
-      type: "system",
-      text: "Monitoring started",
-    },
-  ]);
-
-  const nextId = useRef(1);
-
-  // ---------------- SIMULATION STATE ----------------
-
-  const [elapsedMinutes, setElapsedMinutes] = useState(0);
   const [running, setRunning] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [scenario, setScenario] = useState("routine");
+  const [storageAvailable, setStorageAvailable] = useState(true);
+  const { values, elapsedMinutes, scenario, speed, location, log } = session;
+  const levels = useMemo(() => getLevels(METRICS, values), [values]);
+  const hazardLv = useMemo(() => hazardLevels(HAZARDS, levels), [levels]);
+  const partLv = useMemo(() => partLevels(METRICS, levels), [levels]);
+  const prevLevels = useRef(levels);
+  const pushLog = useCallback(
+    (items) => setSession((previous) => appendLog(previous, items)),
+    [],
+  );
 
-  const clock = (() => {
-    const day = Math.floor(elapsedMinutes / 1440) + 1;
-    const hours = Math.floor((elapsedMinutes % 1440) / 60);
-    const minutes = elapsedMinutes % 60;
-
-    return `Day ${day} · ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  })();
-
-  // ---------------- LOGGING ----------------
-
-  const pushLog = useCallback((items) => {
-    const stamped = items.map((e) => ({
-      id: nextId.current++,
-      clock: now(),
-      ...e,
-    }));
-
-    setLog((prev) => [...prev, ...stamped]);
-  }, []);
-
-  // ---------------- METRIC UPDATES ----------------
-
-  const setValue = useCallback((id, value) => {
-    setValues((prev) => ({
-      ...prev,
-      [id]: clampMetric(id, Number(value)),
-    }));
-  }, []);
-
-  // ---------------- SIMULATION CLOCK ----------------
+  useEffect(() => {
+    const saved = writeStorage('simulation', session);
+    // Storage is an external capability; report quota/private-mode failures.
+    queueMicrotask(() => setStorageAvailable(saved));
+  }, [session]);
 
   useEffect(() => {
     if (!running) return;
-
-    const timer = setInterval(() => {
-      setElapsedMinutes((prev) => prev + speed);
-
-      const selectedScenario = SCENARIOS.find(
-        (s) => s.id === scenario
-      );
-
-      setValues((prev) => {
-        const next = { ...prev };
-
-        for (const [id, rate] of Object.entries(
-          selectedScenario?.effects ?? {}
-        )) {
-          const metric = metricById[id];
-
-          if (!metric) continue;
-
-          next[id] = clampMetric(
-            id,
-            prev[id] + (rate * speed) / 60
-          );
-        }
-
-        return next;
-      });
-    }, 1000);
-
+    const timer = setInterval(() => setSession(advanceSimulation), 1000);
     return () => clearInterval(timer);
-  }, [running, speed, scenario]);
+  }, [running]);
 
-  // ---------------- SIMULATION CONTROLS ----------------
+  useEffect(() => {
+    const changes = diffLevels(prevLevels.current, levels);
+    prevLevels.current = levels;
+    if (!changes.length) return;
+    const entries = changes.map(({ id, to, up }) => {
+      const metric = metricById[id];
+      const text = `${metric.name}: ${to} (${formatValue(metric, values[id])}). ${up ? metric.advice[to] || 'Verify the input.' : 'Simulated reading updated.'}`;
+      if (up) toast[to === 'critical' ? 'error' : 'warn'](text);
+      return { type: up ? 'alert' : 'check', level: to, text };
+    });
+    pushLog(entries);
+  }, [values, levels, pushLog]);
 
-  const handleToggle = () => {
-    setRunning((prev) => !prev);
-
-    pushLog([
-      {
-        type: "system",
-        text: running
-          ? "Simulation paused"
-          : "Simulation started",
-      },
-    ]);
-  };
-
-  const handleReset = () => {
-    setRunning(false);
-    setElapsedMinutes(0);
-    setSpeed(1);
-    setValues(createInitialValues());
-
-    pushLog([
-      {
-        type: "system",
-        text: "Simulation reset to default health values",
-      },
-    ]);
-  };
-
-  const handleSpeed = (newSpeed) => {
-    setSpeed(newSpeed);
-
-    pushLog([
-      {
-        type: "system",
-        text: `Simulation speed changed to ${newSpeed}x`,
-      },
-    ]);
-  };
-
-  const handleScenario = (newScenario) => {
-    setRunning(false);
-    setScenario(newScenario);
-    setElapsedMinutes(0);
-    setValues(createInitialValues());
-
-    const selected = SCENARIOS.find(
-      (s) => s.id === newScenario
-    );
-
-    pushLog([
-      {
-        type: "system",
-        text: `Scenario changed to ${selected?.label ?? newScenario}. Health values reset.`,
-      },
-    ]);
-  };
-
-  // ---------------- MANUAL ACTIONS ----------------
-
-  const handleAction = (actionId, inputValue) => {
-    const actionNames = {
-      rest: "Rest",
-      hydrate: "Hydration",
-      exercise: "Exercise",
-      check: "Medical check",
-      treatment: "Medical response",
-    };
-
-    switch (actionId) {
-      case "rest":
-        setValues((prev) => ({
-          ...prev,
-          sleepLoss: clampMetric(
-            "sleepLoss",
-            prev.sleepLoss - inputValue * 0.5
-          ),
-          stress: clampMetric(
-            "stress",
-            prev.stress + 2
-          ),
-          energy: clampMetric(
-            "energy",
-            prev.energy + inputValue * 2
-          ),
-          headache: clampMetric(
-            "headache",
-            prev.headache - 1
-          ),
-        }));
-        break;
-
-      case "hydrate":
-        setValues((prev) => ({
-          ...prev,
-          heartRate: clampMetric(
-            "heartRate",
-            prev.heartRate - 3
-          ),
-          headache: clampMetric(
-            "headache",
-            prev.headache - 1
-          ),
-          energy: clampMetric(
-            "energy",
-            prev.energy + 3
-          ),
-        }));
-        break;
-
-      case "exercise":
-        setValues((prev) => ({
-          ...prev,
-          energy: clampMetric(
-            "energy",
-            prev.energy - 3
-          ),
-          stress: clampMetric(
-            "stress",
-            prev.stress - 2
-          ),
-          boneMuscleLoss: clampMetric(
-            "boneMuscleLoss",
-            prev.boneMuscleLoss - 1
-          ),
-        }));
-        break;
-
-      case "check":
-        pushLog([
+  function setValue(id, value) {
+    if (!metricById[id] || !Number.isFinite(Number(value))) return;
+    setSession((previous) => ({
+      ...previous,
+      values: { ...previous.values, [id]: clampMetric(id, Number(value)) },
+    }));
+  }
+  function handleAction(id, amount) {
+    try {
+      const next = applyAction(values, id, amount);
+      setSession((previous) =>
+        appendLog({ ...previous, values: next }, [
           {
-            type: "check",
-            text: "Medical check completed. Current health readings reviewed.",
+            type: id === 'review' ? 'review' : 'action',
+            text:
+              id === 'review'
+                ? 'Simulated review request recorded locally; no message sent.'
+                : id === 'check'
+                  ? 'Simulated check-in recorded. No medical examination performed.'
+                  : `${actions.find((a) => a.id === id)?.label} applied to demo values only.`,
           },
-        ]);
-        break;
-
-      case "treatment":
-        setValues((prev) => ({
-          ...prev,
-          headache: clampMetric(
-            "headache",
-            prev.headache - 2
-          ),
-          dizziness: clampMetric(
-            "dizziness",
-            prev.dizziness - 2
-          ),
-          stress: clampMetric(
-            "stress",
-            prev.stress + 5
-          ),
-          heartRate: clampMetric(
-            "heartRate",
-            prev.heartRate - 5
-          ),
-        }));
-        break;
-
-      default:
-        return;
+        ]),
+      );
+    } catch (error) {
+      toast.error(error.message);
     }
-
-    if (actionId !== "check") {
-      pushLog([
-        {
-          type: "action",
-          text: `${actionNames[actionId]} action performed`,
-        },
-      ]);
-    }
-  };
-
-  // ---------------- HEALTH STATUS ----------------
-
-  const levels = useMemo(
-    () => getLevels(METRICS, values),
-    [values]
-  );
-
-  const hazardLv = useMemo(
-    () => hazardLevels(HAZARDS, levels),
-    [levels]
-  );
-
-  const partLv = useMemo(
-    () => partLevels(METRICS, levels),
-    [levels]
-  );
-
-  const details = useMemo(() => {
-    const out = {};
-
-    for (const m of METRICS) {
-      (out[m.part] ??= []).push({
+  }
+  const loc = LOCATIONS.find((l) => l.id === location);
+  const chips = HAZARDS.map((h) => ({
+    ...h,
+    level: hazardLv[h.id],
+    ...(h.id === 'distance'
+      ? { detail: loc.distance, sub: `${loc.delay} one-way delay` }
+      : {}),
+  }));
+  const details = Object.fromEntries(
+    ['head', 'chest', 'heart', 'arms', 'legs'].map((part) => [
+      part,
+      METRICS.filter((m) => m.part === part).map((m) => ({
         id: m.id,
         name: m.name,
         value: formatValue(m, values[m.id]),
         level: levels[m.id],
-      });
-    }
-
-    return out;
-  }, [values, levels]);
-
-  // ---------------- AUTOMATIC ALERTS ----------------
-
-  const prevLevels = useRef(levels);
-  const prevHazards = useRef(hazardLv);
-
-  useEffect(() => {
-    const entries = [];
-
-    for (const { id, to, up } of diffLevels(
-      prevLevels.current,
-      levels
-    )) {
-      const m = metricById[id];
-      const reading = formatValue(m, values[id]);
-
-      if (up) {
-        const title = `${m.name} is ${to}`;
-
-        notify(
-          to === "critical" ? "error" : "warn",
-          title,
-          `${reading}. ${m.advice[to]}`
-        );
-
-        entries.push({
-          type: "alert",
-          level: to,
-          text: `${title} (${reading}). ${m.advice[to]}`,
-        });
-      } else {
-        entries.push({
-          type: "check",
-          level: to,
-          text:
-            to === "normal"
-              ? `${m.name} back to normal (${reading})`
-              : `${m.name} improved to ${to} (${reading})`,
-        });
-      }
-    }
-
-    for (const { id, to, up } of diffLevels(
-      prevHazards.current,
-      hazardLv
-    )) {
-      const h = hazardById[id];
-
-      const causes = h.metrics
-        .filter((mid) => levels[mid] !== "normal")
-        .map((mid) => metricById[mid].name)
-        .join(", ");
-
-      if (up) {
-        if (to === "critical") {
-          notify(
-            "error",
-            `${h.name} hazard: critical`,
-            `Triggered by: ${causes}`  ,
-          );
-        }
-
-        entries.push({
-          type: "alert",
-          level: to,
-          text: `Hazard ${h.name} is now ${to}. Triggered by: ${causes}`,
-        });
-      } else {
-        entries.push({
-          type: "check",
-          level: to,
-          text:
-            to === "normal"
-              ? `Hazard ${h.name} back to normal`
-              : `Hazard ${h.name} eased to ${to}`,
-        });
-      }
-    }
-
-    prevLevels.current = levels;
-    prevHazards.current = hazardLv;
-
-    if (entries.length) pushLog(entries);
-  }, [values, levels, hazardLv, pushLog]);
-
-  // ---------------- LOCATION ----------------
-
-  const changeLocation = (id) => {
-    if (id === location) return;
-
-    const loc = LOCATIONS.find((l) => l.id === id);
-
-    setLocation(id);
-
-    pushLog([
-      {
-        type: "system",
-        text: `Location: ${loc.name} (${loc.distance}, ${loc.delay} one-way delay)`,
-      },
-    ]);
-  };
-
-  const loc = LOCATIONS.find((l) => l.id === location);
-
-  const hazardChips = HAZARDS.map((h) =>
-    h.id === "distance"
-      ? {
-          id: h.id,
-          name: h.name,
-          detail: loc.distance,
-          sub: `${loc.delay} delay`,
-        }
-      : {
-          id: h.id,
-          name: h.name,
-          level: hazardLv[h.id],
-        }
+      })),
+    ]),
   );
-
-  // ---------------- UI ----------------
-
+  function exportLog() {
+    const url = URL.createObjectURL(
+      new Blob(
+        [
+          JSON.stringify(
+            {
+              synthetic: true,
+              exported_at: new Date().toISOString(),
+              ...session,
+            },
+            null,
+            2,
+          ),
+        ],
+        { type: 'application/json' },
+      ),
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'astropulse-synthetic-session.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
   return (
-    <main className="space-app relative isolate min-h-screen bg-slate-950 p-4 text-white">
-      <div className="space-backdrop" aria-hidden="true">
-        <span className="space-planet space-planet--ringed" />
-        <span className="space-planet space-planet--distant" />
-        <span className="space-planet space-planet--tiny" />
-      </div>
-      <div className="relative z-10 mx-auto grid max-w-7xl gap-4">
-
-        <Simulator
-          clock={clock}
-          running={running}
-          speed={speed}
-          speeds={[1, 4, 12, 24]}
-          scenarios={SCENARIOS}
-          scenario={scenario}
-          actions={ACTIONS}
-          onToggle={handleToggle}
-          onReset={handleReset}
-          onSpeed={handleSpeed}
-          onScenario={handleScenario}
-          onAction={handleAction}
-        />
-
-        <HazardBar
-          hazards={hazardChips}
-          locations={LOCATIONS}
-          location={location}
-          onLocation={changeLocation}
-        />
-
-        <div className="grid min-h-0 items-stretch gap-4 lg:grid-cols-[340px_1fr]">
-          <div className="h-[420px] min-h-0 lg:h-[480px]">
-            <Body status={partLv} details={details} />
-          </div>
-
-          <div className="h-[420px] min-h-0 lg:h-[480px]">
-            <MetricsPanel
-              metrics={METRICS}
-              values={values}
-              onChange={setValue}
-            />
-          </div>
+    <>
+      <a href="#mission-health" className="skip-link">
+        Skip to mission health
+      </a>
+      <main className="space-app relative isolate min-h-screen bg-slate-950 p-4 text-white">
+        <div className="space-backdrop" aria-hidden="true">
+          <span className="space-planet space-planet--ringed" />
+          <span className="space-planet space-planet--distant" />
         </div>
-
-        <Log
-          entries={log}
-          onClear={() => setLog([])}
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-5">
+          <header className="flex flex-wrap items-center justify-between gap-4 py-3">
+            <div>
+              <p className="text-cyan-200 text-sm uppercase tracking-widest">
+                InfinityDz · NASA Space Apps prototype
+              </p>
+              <h1 className="text-4xl font-bold mt-1">AstroPulse</h1>
+            </div>
+            <span className="state-badge state-watch">Synthetic demo</span>
+          </header>
+          <p className="rounded-xl border border-amber-400/60 bg-amber-950/50 p-4 text-amber-100">
+            All crew identities and health readings are simulated. This
+            educational prototype is not clinically validated, does not
+            prescribe treatment, and must not be used for medical or
+            flight-safety decisions. NASA does not endorse this project.
+          </p>
+          <MissionHealth />
+          <SpaceWeather />
+          <section aria-labelledby="sandbox-heading" className="grid gap-4">
+            <div>
+              <h2 id="sandbox-heading" className="text-2xl font-semibold">
+                Interactive signal sandbox
+              </h2>
+              <p className="text-slate-300 mt-1">
+                Explore illustrative thresholds below. This sandbox is
+                independent of the crew dashboard and trained model above.
+              </p>
+            </div>
+            <Simulator
+              clock={missionClock(elapsedMinutes)}
+              running={running}
+              speed={speed}
+              scenarios={SCENARIOS}
+              scenario={scenario}
+              actions={actions}
+              onToggle={() => {
+                setRunning(!running);
+                pushLog([
+                  {
+                    type: 'system',
+                    text: running ? 'Simulation paused' : 'Simulation started',
+                  },
+                ]);
+              }}
+              onReset={() => {
+                setRunning(false);
+                setSession((previous) =>
+                  appendLog(
+                    {
+                      ...previous,
+                      elapsedMinutes: 0,
+                      speed: 1,
+                      values: initialValues(),
+                    },
+                    [
+                      {
+                        type: 'system',
+                        text: 'Simulation values and clock reset.',
+                      },
+                    ],
+                  ),
+                );
+              }}
+              onSpeed={(newSpeed) =>
+                setSession((previous) => ({ ...previous, speed: newSpeed }))
+              }
+              onScenario={(newScenario) => {
+                setRunning(false);
+                setSession((previous) =>
+                  appendLog(
+                    {
+                      ...previous,
+                      scenario: newScenario,
+                      elapsedMinutes: 0,
+                      values: initialValues(),
+                    },
+                    [
+                      {
+                        type: 'system',
+                        text: 'Sandbox scenario changed and values reset.',
+                      },
+                    ],
+                  ),
+                );
+              }}
+              onAction={handleAction}
+            />
+            <HazardBar
+              hazards={chips}
+              locations={LOCATIONS}
+              location={location}
+              onLocation={(id) =>
+                setSession((previous) => ({ ...previous, location: id }))
+              }
+            />
+            <div className="grid items-start gap-4 lg:grid-cols-[340px_1fr]">
+              <div className="h-[500px]">
+                <Body status={partLv} details={details} />
+              </div>
+              <MetricsPanel
+                metrics={METRICS}
+                values={values}
+                onChange={setValue}
+              />
+            </div>
+            <Log
+              entries={log}
+              onClear={() =>
+                setSession((previous) => ({ ...previous, log: [] }))
+              }
+            />
+            <div className="flex flex-wrap gap-3">
+              <button className="health-button" onClick={exportLog}>
+                Export synthetic session
+              </button>
+              <button
+                className="health-button"
+                onClick={() => {
+                  setRunning(false);
+                  setSession(restoreSimulation(null));
+                }}
+              >
+                Clear saved sandbox session
+              </button>
+            </div>
+            <p role="status" className="text-sm text-slate-300">
+              {storageAvailable
+                ? 'Synthetic sandbox values and the latest 200 log entries are saved on this device. Simulation pauses on reload.'
+                : 'Device storage is unavailable. This session will not survive a reload.'}
+            </p>
+          </section>
+          <footer className="text-slate-300 text-sm py-4">
+            MMASH reference model · synthetic mission telemetry · NASA DONKI
+            event context. Real medical records are not supported by this demo.
+          </footer>
+        </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          limit={3}
+          theme="dark"
         />
-
-      </div>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        theme="dark"
-      />
-    </main>
+      </main>
+    </>
   );
 }
-
-export default App;

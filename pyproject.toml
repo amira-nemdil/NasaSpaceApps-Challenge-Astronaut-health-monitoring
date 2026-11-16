@@ -1,0 +1,9 @@
+[tool.vercel]
+entrypoint = "app:app"
+
+[tool.vercel.fastapi.static]
+exclude = true
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["backend/tests"]

@@ -14,6 +14,7 @@ The raw MMASH files are expected at ``data/raw/mmash/user_*/Actigraph.csv``.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import platform
@@ -95,6 +96,10 @@ def build_participant_windows(
     usable_time = absolute_seconds.notna()
     frame = frame.loc[usable_time].copy()
     frame["_absolute_seconds"] = absolute_seconds.loc[usable_time]
+    # Coverage is measured in unique one-second epochs, never duplicate rows.
+    frame = frame.loc[np.isfinite(frame["_absolute_seconds"])].copy()
+    frame = frame.loc[frame["_absolute_seconds"] % 1 == 0]
+    frame = frame.sort_values("_absolute_seconds").drop_duplicates("_absolute_seconds", keep="last")
 
     heart_rate = pd.to_numeric(frame["HR"], errors="coerce")
     # Values outside a broad physically possible sensor range are data errors,
@@ -364,6 +369,8 @@ def main() -> None:
         threshold_percentile=args.threshold_percentile,
     )
     metadata["source_quality"] = quality
+    metadata["source_sha256"] = {str(path.relative_to(args.data_dir)): hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
+    metadata["training_script_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(artifact, args.output, compress=3)

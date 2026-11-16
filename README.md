@@ -1,148 +1,77 @@
-[README.md](https://github.com/user-attachments/files/34847307/README.md)
-# AstroPulse — by InfinityDz 🚀
+# AstroPulse — InfinityDz
 
-> **NASA Space Apps Challenge 2026** · *Create Health Monitoring Software for Astronauts on Space Missions*
+An educational NASA Space Apps astronaut-health monitoring prototype with a React 19/Tailwind interface, FastAPI service, and a reproducible MMASH Isolation Forest.
 
-**An offline-friendly, explainable astronaut health monitoring prototype.** AstroPulse tracks a simulated 14-day mission, compares readings with each crewmember's personal baseline, flags changes worth reviewing, explains the signals, and optionally retrieves real NASA DONKI **space-weather event reports** (not astronaut radiation doses).
+**All crew identities, mission readings, thresholds, and action effects are synthetic or illustrative. This is not a medical device, is not clinically validated, and must not guide medical treatment or flight-safety decisions. NASA does not endorse this project.**
 
-**This is a hackathon prototype, not a medical device.** All crew identities, vital signs, mission scenarios, and monitoring thresholds are **synthetic/illustrative**. The system does not diagnose disease, prescribe treatment, estimate radiation dose, or make flight-safety decisions. NASA is not affiliated with or endorsing this project.
+Public address: https://astronaut-health-monitoring-nasa-app-infinitydz.vercel.app/
 
-## Why this project?
+The address may still serve an earlier release until the deployment described in [DEPLOYMENT.md](docs/DEPLOYMENT.md) is performed. The repository's current deployment configuration serves both the frontend and API from one origin.
 
-NASA's challenge asks for software that **gathers health indicators and enables astronauts to evaluate and act on health status**, particularly during long-duration missions. AstroPulse focuses on three demonstrable capabilities:
+## What the app does
 
-1. **Personalized baselines** rather than blindly applying terrestrial thresholds to astronauts.
-2. **Explainable, trend-aware alerts** and careful, non-clinical follow-up prompts.
-3. **Crew-facing, offline-friendly workflow** with optional NASA space-weather context.
+- **Mission health:** select one of three synthetic crew members, a `nominal`, `sleep_debt`, or `cardio_stress` scenario, and a mission day. The frontend requests actual baseline and trained-model results from FastAPI. It shows statistical rarity, threshold, quality, model version, reference deviations, and input data separately from daily baseline assessments.
+- **Interactive sandbox:** explore 15 illustrative signals, body regions, group flags, time acceleration, and simulated actions. This sandbox uses transparent thresholds and is independent of the trained model. Groups are not measurements of radiation dose or environmental hazards. Significant signals remain visible when another group member is normal.
+- **NASA context:** optionally request real DONKI SEP event metadata. Requests are cached with explicit empty, unavailable, and stale states. Reports do not estimate crew exposure.
+- **Local continuity:** the production app shell can reopen offline after a successful online visit. Previously fetched synthetic mission results are clearly marked as saved; they are not new offline inference. Sandbox values, paused clock, review acknowledgments, and the latest 200 log entries persist on the device. Sessions can be exported or cleared. This storage is not suitable for real medical records.
 
-**Demo scenarios:** `nominal`, `sleep_debt`, and `cardio_stress`. Every reading is deterministic, so the demo works without wearables, NASA access, or internet after dependency installation.
+## Run locally
 
-## Technology
+Use **Python 3.13** and **Node 22.12+** (Node 24 also works). Runtime package versions match the existing trained model. From the repository root:
 
-- **Frontend:** React 18 + Vite + vanilla CSS (responsive, no external component library)
-- **Backend:** Python 3.10+ + FastAPI (local, deterministic simulation)
-- **Monitoring engine:** transparent personal-baseline checks plus an optional MMASH-trained Isolation Forest for five-minute wearable windows; neither layer is clinically validated
-- **Optional real NASA data:** NASA DONKI SEP event metadata through the official NASA Open API (live internet and availability required)
-
-## Quick start
-
-Start each service from a separate terminal.
-
-### 1. Backend
-
-```bash
-cd backend
+```powershell
 python -m venv .venv
-# Windows PowerShell: .venv\Scripts\Activate.ps1
-# macOS/Linux: source .venv/bin/activate
-python -m pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
+npm --prefix frontend ci
+npm --prefix frontend run build
+.\.venv\Scripts\python.exe -m uvicorn app:app --host 127.0.0.1 --port 8000
 ```
 
-API docs: http://localhost:8000/docs
+On macOS/Linux use `.venv/bin/python` in place of `.venv\Scripts\python.exe`. Open http://127.0.0.1:8000. API specification: `/docs`; liveness: `/api/health`; model readiness and release identity: `/api/ready`.
 
-### 2. Frontend
+For frontend hot reload, run `npm --prefix frontend run dev` in a second terminal and open http://localhost:5173. Vite proxies `/api` to port 8000. `VITE_API_URL` can override the origin for development; production defaults to same-origin API calls. Build-time URL changes require a rebuild, and custom cross-origin production hosting also needs matching CSP and CORS settings.
 
-```bash
+Copy `backend/.env.example` to `backend/.env` for optional settings; FastAPI loads this file without overriding hosting-provided environment values. `NASA_API_KEY` increases the optional NASA feed quota. Never place secrets in `VITE_*` variables. `ASTROPULSE_CORS_ORIGINS` is a comma-separated explicit origin list. `ASTROPULSE_MODEL_SHA256` optionally enforces the trusted artifact's SHA256; `ASTROPULSE_MODEL_PATH` selects a trusted local model file.
+
+## Verification
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+npm --prefix frontend run lint
+npm --prefix frontend test
+npm --prefix frontend run build
 cd frontend
-npm install
-npm run dev
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Open **http://localhost:5173**. For alternate API URLs set `VITE_API_URL` (see `frontend/.env.example`). The Vite dev server proxies `/api` to port `8000` by default.
+Browser tests start the unified app on port 8011. Set `PYTHON_EXECUTABLE` if your interpreter is elsewhere. For an existing Chrome installation, set `PLAYWRIGHT_CHROME_EXECUTABLE` to its executable path. CI installs Chromium and runs the same checks on Linux. No raw participant records are required for application tests; the trusted model is committed.
 
-### 3. Tests
+## Training and evaluation
 
-```bash
-cd backend
-python -m pytest -q
+Download [MMASH v1.0.0](https://physionet.org/content/mmash/1.0.0/) into the local, gitignored layout in [data/README.md](data/README.md).
+
+```powershell
+.\.venv\Scripts\python.exe backend/scripts/train_mmash.py
+.\.venv\Scripts\python.exe backend/scripts/evaluate_mmash.py
 ```
 
-### 4. Train the optional MMASH model
+The trainer uses non-overlapping five-minute windows and distinct participant train/calibration/test partitions. Coverage counts unique one-second timestamps. New releases record source-file and training-script hashes. The runtime reloads a replaced artifact when its file signature changes; release checksums can pin a trusted deployment.
 
-Download [MMASH v1.0.0 from PhysioNet](https://physionet.org/content/mmash/1.0.0/) and place the 22 `user_*` folders under `data/raw/mmash/`, following [`data/README.md`](data/README.md). Raw and processed datasets stay local and are not committed.
+The model uses seven wearable/time features. It does not score blood counts, microbiome, vision, or bone-loss sliders. Sleep, fatigue, and mood belong to the separate daily baseline layer. Those assessments compare each day independently; persistence and clinical trend detection are not claimed.
 
-From the repository root:
+[Repeated evaluation results](docs/model-evaluation.json) cover five participant splits. Reference alert rates range from approximately **0.24% to 5.04%** at a 99th-percentile threshold. An extreme artificial perturbation benchmark flags all injected windows in these runs; this is not clinical accuracy. MMASH contains approximately 24 hours from 22 healthy young adult men on Earth and cannot establish astronaut or medical-event performance. See [SCIENCE.md](docs/SCIENCE.md) for sources, limitations, and the distinction between feature-reference deviations and model attribution.
 
-```bash
-python backend/scripts/train_mmash.py
-```
+## Project documentation
 
-Training creates `backend/models/mmash_iforest_v1.joblib` and a metadata file. The model processes five-minute heart-rate and actigraphy windows. Sleep, fatigue, and mood remain in the separate baseline/self-report layer.
+- [Implementation status and remaining limits](docs/IMPLEMENTATION_STATUS.md)
+- [Deployment and post-deploy verification](docs/DEPLOYMENT.md)
+- [API contract](docs/API.md) and [frontend integration](docs/FRONTEND_INTEGRATION.md)
+- [Original review and evidence](docs/PROJECT_REVIEW_2026-11-15.md), preserved as a record of the earlier release
+- [Team and collaboration](docs/TEAM.md), [submission notes](docs/SUBMISSION.md)
 
-### 5. Run the demo without sensor hardware
+The software license remains a team decision; no new reuse license has been granted. Preserve the MMASH citation and its separate dataset-license notices.
 
-No physical wearable is required. The backend can generate clearly labeled, deterministic five-minute windows and score them with the trained model:
+## Credits and AI assistance
 
-```text
-GET http://127.0.0.1:8000/api/ml/demo/crew-01?scenario=cardio_stress
-```
-
-The response contains 14 mission days with the synthetic model input, ML output, transparent baseline assessment, and combined display status. See [`docs/FRONTEND_INTEGRATION.md`](docs/FRONTEND_INTEGRATION.md) for the React handoff.
-
-## Live walkthrough (90 seconds)
-
-1. Open **Mission Health** with a crew member selected; point out the **synthetic data** label.
-2. Select `Nominal` → readings stay near personal baseline.
-3. Select `Sleep debt` → move **mission day** slider from day 7 to day 14 → see fatigue/sleep/heart rate shift and transparent explanation.
-4. Select `Cardio stress` → show a different scenario, not a clinical diagnosis.
-5. Select `Load NASA space weather` → show **actual event metadata** if the feed is available. If unavailable, the dashboard honestly says so; it never fabricates real NASA data.
-6. Explain how a future wearable/sensor feed would replace the simulator.
-
-## Folders
-
-```text
-backend/
-  app/main.py           # FastAPI routes and NASA DONKI adapter
-  app/ml.py             # MMASH model input contract and scoring
-  app/simulator.py      # synthetic mission telemetry and baseline logic
-  scripts/train_mmash.py # reproducible preprocessing and training
-  models/               # generated model and metadata
-  tests/                # scenario and API tests
-data/
-  README.md             # dataset source, layout, license and citation
-  raw/mmash/            # local MMASH participant folders (gitignored)
-  processed/            # reproducible intermediate data (gitignored)
-frontend/
-  src/App.jsx           # dashboard, scenario and mission day controls
-  src/styles.css        # responsive styling
-  package.json
-  vite.config.js
-docs/
-  TEAM.md               # responsibilities, workflow and remote participation
-  SCIENCE.md            # limitations, credible references and methodology
-  API.md                # documented response shapes
-  SUBMISSION.md         # 48h checklist and suggested short demo
-```
-
-## Team: InfinityDz
-
-| Person | Proposed focus |
-|---|---|
-| Amira Nemdil | AI / anomaly detection / methodology |
-| Ferkous Lina Darine | Medical literature and clinical-safety wording |
-| Anis Belil | Architecture, React integration, deployment |
-| Douaa Khouni | UI/UX, design system, frontend |
-| Djawad Benzira | APIs, data model, integration tests |
-| Fettous Yousra Lyna | Sensor pathways, constraints and QA |
-
-These are **suggested roles** to confirm with the team, not pre-agreed assignments. See [`docs/TEAM.md`](docs/TEAM.md).
-
-## Sources and appropriate claims
-
-- [Official 2026 challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)
-- [NASA Human Research Program](https://www.nasa.gov/hrp/) — mission health research context
-- [NASA Open Science Data Repository](https://osdr.nasa.gov/) — research studies; **not** the simulator's data source
-- [NASA DONKI API](https://api.nasa.gov/) — optional real reported solar energetic particle *events*, **not** crew dose/health impact
-- [NASA Space Apps discussion on available data](https://github.com/nasa/spaceapps/discussions/2025) — supports clearly labeled synthetic telemetry when public real-time individual astronaut records are unavailable
-- [MMASH v1.0.0 on PhysioNet](https://physionet.org/content/mmash/1.0.0/) — Earth-based wearable reference data for the optional anomaly model; not astronaut or clinical validation data
-
-Do not say that synthetic crew observations come from NASA, that public solar-event reports measure a specific astronaut's dose, or that the prototype predicts medical events.
-
-## Collaboration
-
-Recommended workflow: each teammate branches from `main`, opens small pull requests, keeps secrets out of the repository, and checks the API contract before merging. See [`docs/TEAM.md`](docs/TEAM.md). If putting the project on GitHub, choose your team's preferred license before granting reuse rights.
-
-## AI use acknowledgement
-
-The starter architecture, frontend, simulator, explanations, tests, and documentation were initially generated with assistance from **ChatGPT (OpenAI)** on 2026-11-14. All code, scientific statements, and visual assets must be reviewed by InfinityDz before submission. Declare AI assistance in the NASA Space Apps project submission as required by its current guidelines. Team contributions and validation should be recorded in the final submission.
+AstroPulse is by InfinityDz. Team contributions and responsibilities should be recorded in [TEAM.md](docs/TEAM.md). The starter and subsequent implementation/review work used ChatGPT/Codex (OpenAI) assistance. Team members must review the code, scientific statements, and final competition submission and disclose assistance under applicable event rules. NASA data, where loaded, comes from the official DONKI service; simulated crew telemetry does not come from NASA.

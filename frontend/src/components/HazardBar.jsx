@@ -1,38 +1,34 @@
-
 const STYLE = {
-  normal: "border-emerald-500/30 bg-emerald-500/10",
-  warning: "border-amber-400/40 bg-amber-400/10",
-  critical: "border-rose-500/50 bg-rose-500/10",
+  unknown: 'border-slate-500 bg-slate-800',
+  normal: 'border-emerald-500/30 bg-emerald-500/10',
+  warning: 'border-amber-400/40 bg-amber-400/10',
+  critical: 'border-rose-500/50 bg-rose-500/10',
 };
 
 const DOT = {
-  normal: "bg-emerald-400",
-  warning: "bg-amber-400",
-  critical: "animate-pulse bg-rose-400",
+  unknown: 'bg-slate-300',
+  normal: 'bg-emerald-400',
+  warning: 'bg-amber-400',
+  critical: 'animate-pulse bg-rose-400',
 };
 
 const LABEL = {
-  normal: "Normal",
-  warning: "Warning",
-  critical: "Critical",
+  unknown: 'Unknown',
+  normal: 'Normal',
+  warning: 'Warning',
+  critical: 'Critical',
 };
 
 function DistanceChip({ hazard, locations, location, onLocation }) {
   return (
     <div className="rounded-lg border border-slate-700/80 bg-slate-800/60 p-3">
       <div className="mb-2">
-        <h3 className="text-sm font-semibold text-slate-100">
-          {hazard.name}
-        </h3>
+        <h3 className="text-sm font-semibold text-slate-100">{hazard.name}</h3>
 
-        <p className="mt-1 text-xs text-slate-400">
-          {hazard.detail}
-        </p>
+        <p className="mt-1 text-xs text-slate-400">{hazard.detail}</p>
 
         {hazard.sub && (
-          <p className="mt-1 text-xs text-slate-500">
-            {hazard.sub}
-          </p>
+          <p className="mt-1 text-xs text-slate-500">{hazard.sub}</p>
         )}
       </div>
 
@@ -48,8 +44,8 @@ function DistanceChip({ hazard, locations, location, onLocation }) {
                 aria-pressed={active}
                 className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
                   active
-                    ? "bg-sky-400 text-slate-950 shadow-sm"
-                    : "bg-slate-700/70 text-slate-300 hover:bg-slate-600"
+                    ? 'bg-sky-400 text-slate-950 shadow-sm'
+                    : 'bg-slate-700/70 text-slate-300 hover:bg-slate-600'
                 }`}
               >
                 {l.name}
@@ -63,30 +59,32 @@ function DistanceChip({ hazard, locations, location, onLocation }) {
 }
 
 function HazardBar({ hazards = [], locations, location, onLocation }) {
-  const hazardItems = hazards.filter((h) => h.id !== "distance");
-  const distance = hazards.find((h) => h.id === "distance");
+  const hazardItems = hazards.filter((h) => h.id !== 'distance');
+  const distance = hazards.find((h) => h.id === 'distance');
 
   return (
     <section className="rounded-xl border border-slate-800 bg-slate-900 p-3 text-white">
       {/* Header */}
       <div className="mb-3">
         <h2 className="text-base font-bold tracking-tight text-slate-100">
-          Environmental Hazards
+          Illustrative signal groups
         </h2>
 
         <p className="mt-0.5 text-xs text-slate-400">
-          Current spaceflight environment status
+          Summaries of simulated readings. Radiation dose and environmental
+          conditions are unmeasured.
         </p>
       </div>
 
       {/* Hazard cards */}
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {hazardItems.map((h) => {
-          const level = STYLE[h.level] ? h.level : "normal";
+          const level = STYLE[h.level] ? h.level : 'unknown';
 
           return (
             <div
               key={h.id}
+              data-testid={`signal-group-${h.id}`}
               className={`flex items-center justify-between gap-2 rounded-lg border p-3 transition-colors ${STYLE[level]}`}
             >
               <div className="flex min-w-0 items-center gap-2">
@@ -100,7 +98,7 @@ function HazardBar({ hazards = [], locations, location, onLocation }) {
                   </h3>
 
                   <p className="mt-0.5 text-xs text-slate-400">
-                    Environmental condition
+                    Highest associated signal flag
                   </p>
                 </div>
               </div>

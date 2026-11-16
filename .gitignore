@@ -8,6 +8,8 @@ venv/
 node_modules/
 dist/
 .vite/
+test-results/
+playwright-report/
 # Editors and OS
 .DS_Store
 Thumbs.db

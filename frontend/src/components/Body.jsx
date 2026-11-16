@@ -1,53 +1,55 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 /* ---------- Config ---------- */
 
 const defaultStatus = {
-  head: "normal",
-  chest: "normal",
-  heart: "warning",
-  arms: "normal",
-  legs: "critical",
+  head: 'unknown',
+  chest: 'unknown',
+  heart: 'unknown',
+  arms: 'unknown',
+  legs: 'unknown',
 };
 
 const statusColors = {
-  normal: { edge: "#0ea5e9", inner: "#67e8f9" },
-  warning: { edge: "#f59e0b", inner: "#fde047" },
-  critical: { edge: "#e11d48", inner: "#fda4af" },
+  unknown: { edge: '#94a3b8', inner: '#e2e8f0' },
+  normal: { edge: '#0ea5e9', inner: '#67e8f9' },
+  warning: { edge: '#f59e0b', inner: '#fde047' },
+  critical: { edge: '#e11d48', inner: '#fda4af' },
 };
 
 const statusLabels = {
-  normal: "Normal",
-  warning: "Warning",
-  critical: "Critical",
+  unknown: 'Unknown',
+  normal: 'Normal',
+  warning: 'Warning',
+  critical: 'Critical',
 };
 
 const partLabels = {
-  head: "Head",
-  chest: "Chest",
-  heart: "Heart",
-  arms: "Arms",
-  legs: "Legs",
+  head: 'Head',
+  chest: 'Chest',
+  heart: 'Heart',
+  arms: 'Arms',
+  legs: 'Legs',
 };
 
-const beatSpeed = { normal: "1.2s", warning: "0.8s", critical: "0.5s" };
+const beatSpeed = { normal: '1.2s', warning: '0.8s', critical: '0.5s' };
 
 /* ---------- Shapes ---------- */
 
 const HEAD_D =
-  "M150 16 C170 16 180 34 179 54 C178 72 168 84 160 88 L160 98 L140 98 L140 88 C132 84 122 72 121 54 C120 34 130 16 150 16 Z";
+  'M150 16 C170 16 180 34 179 54 C178 72 168 84 160 88 L160 98 L140 98 L140 88 C132 84 122 72 121 54 C120 34 130 16 150 16 Z';
 
 const CHEST_D =
-  "M142 98 L158 98 C174 101 194 105 204 118 C207 142 199 176 195 206 C192 230 195 250 198 268 C180 278 120 278 102 268 C105 250 108 230 105 206 C101 176 93 142 96 118 C106 105 126 101 142 98 Z";
+  'M142 98 L158 98 C174 101 194 105 204 118 C207 142 199 176 195 206 C192 230 195 250 198 268 C180 278 120 278 102 268 C105 250 108 230 105 206 C101 176 93 142 96 118 C106 105 126 101 142 98 Z';
 
 const ARM_D =
-  "M100 112 C86 112 78 124 76 142 C72 172 68 202 64 230 C60 256 56 282 52 308 C50 320 50 332 54 342 C60 350 70 346 72 338 C74 322 78 300 84 276 C90 250 95 226 98 205 C100 180 102 150 102 124 C102 118 101 114 100 112 Z";
+  'M100 112 C86 112 78 124 76 142 C72 172 68 202 64 230 C60 256 56 282 52 308 C50 320 50 332 54 342 C60 350 70 346 72 338 C74 322 78 300 84 276 C90 250 95 226 98 205 C100 180 102 150 102 124 C102 118 101 114 100 112 Z';
 
 const LEG_D =
-  "M105 282 C101 315 101 350 106 388 C109 410 107 435 111 462 C113 482 112 494 110 506 C104 516 100 530 114 534 C128 536 140 533 140 522 C138 510 136 498 137 484 C140 456 144 420 144 392 C147 356 148 318 147 282 Z";
+  'M105 282 C101 315 101 350 106 388 C109 410 107 435 111 462 C113 482 112 494 110 506 C104 516 100 530 114 534 C128 536 140 533 140 522 C138 510 136 498 137 484 C140 456 144 420 144 392 C147 356 148 318 147 282 Z';
 
 const HEART_D =
-  "M0 22 C-26 4 -22 -20 -8 -20 C-3 -20 0 -16 0 -12 C0 -16 3 -20 8 -20 C22 -20 26 4 0 22 Z";
+  'M0 22 C-26 4 -22 -20 -8 -20 C-3 -20 0 -16 0 -12 C0 -16 3 -20 8 -20 C22 -20 26 4 0 22 Z';
 
 /* ---------- One body part: soft fill + glowing outline ---------- */
 
@@ -64,18 +66,28 @@ function Part({
   className,
   extraStyle,
 }) {
-  const { edge, inner } = statusColors[status];
+  const { edge, inner } = statusColors[status] || statusColors.unknown;
   const active = hovered || selected;
 
   return (
     <g
+      role="button"
+      tabIndex={0}
+      aria-label={`${partLabels[partKey]}: ${statusLabels[status] || 'Unknown'}`}
+      aria-pressed={selected}
       className={className}
       onMouseEnter={() => onHover(partKey)}
       onMouseLeave={() => onHover(null)}
       onClick={() => onSelect(partKey)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect(partKey);
+        }
+      }}
       style={{
-        cursor: "pointer",
-        transition: "filter 0.2s",
+        cursor: 'pointer',
+        transition: 'filter 0.2s',
         filter: active
           ? `drop-shadow(0 0 10px ${edge})`
           : `drop-shadow(0 0 4px ${edge}99)`,
@@ -90,7 +102,7 @@ function Part({
         stroke={selected ? inner : edge}
         strokeWidth={selected ? 3 : 2}
         strokeLinejoin="round"
-        style={{ transition: "fill-opacity 0.2s" }}
+        style={{ transition: 'fill-opacity 0.2s' }}
       />
     </g>
   );
@@ -130,45 +142,45 @@ function Body({ status = defaultStatus, details = {} }) {
       `}</style>
 
       <h2 className="mb-2 shrink-0 text-center text-lg font-semibold">
-  Astronaut Body Monitoring
-</h2>
+        Simulated body signals
+      </h2>
 
       <div className="flex min-h-0 flex-1 justify-center">
-  <svg
-    viewBox="0 0 300 550"
-    className="h-full w-full max-w-[260px]"
-    preserveAspectRatio="xMidYMid meet"
-  >
+        <svg
+          viewBox="0 0 300 550"
+          className="h-full w-full max-w-[260px]"
+          preserveAspectRatio="xMidYMid meet"
+        >
           {/* Legs */}
-          <Part {...common("legs")} d={LEG_D} />
+          <Part {...common('legs')} d={LEG_D} />
           <Part
-            {...common("legs")}
+            {...common('legs')}
             d={LEG_D}
             transform="translate(300 0) scale(-1 1)"
           />
 
           {/* Arms */}
-          <Part {...common("arms")} d={ARM_D} transform="translate(-8 0)" />
+          <Part {...common('arms')} d={ARM_D} transform="translate(-8 0)" />
           <Part
-            {...common("arms")}
+            {...common('arms')}
             d={ARM_D}
             transform="translate(308 0) scale(-1 1)"
           />
 
           {/* Chest */}
-          <Part {...common("chest")} d={CHEST_D} />
+          <Part {...common('chest')} d={CHEST_D} />
 
           {/* Head */}
-          <Part {...common("head")} d={HEAD_D} />
+          <Part {...common('head')} d={HEAD_D} />
 
           {/* Heart (beating) */}
           <Part
-            {...common("heart")}
+            {...common('heart')}
             d={HEART_D}
             transform="translate(158 168)"
             baseOpacity={0.45}
             className="heart-beat"
-            extraStyle={{ "--beat": beatSpeed[bodyStatus.heart] }}
+            extraStyle={{ '--beat': beatSpeed[bodyStatus.heart] }}
           />
         </svg>
       </div>
@@ -208,7 +220,7 @@ function Body({ status = defaultStatus, details = {} }) {
           </div>
         ) : (
           <span className="text-slate-400">
-            Click a body part to see its status.
+            Select a body part with mouse or keyboard to inspect its signals.
           </span>
         )}
       </div>
