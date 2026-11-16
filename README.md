@@ -1,12 +1,12 @@
 # AstroPulse — InfinityDz
 
+**[Open the AstroPulse app](https://astronaut-health-monitoring-nasa-app-infinitydz.vercel.app/)**
+
 An educational NASA Space Apps astronaut-health monitoring prototype with a React 19/Tailwind interface, FastAPI service, and a reproducible MMASH Isolation Forest.
 
 **All crew identities, mission readings, thresholds, and action effects are synthetic or illustrative. This is not a medical device, is not clinically validated, and must not guide medical treatment or flight-safety decisions. NASA does not endorse this project.**
 
-Public address: https://astronaut-health-monitoring-nasa-app-infinitydz.vercel.app/
-
-The address may still serve an earlier release until the deployment described in [DEPLOYMENT.md](docs/DEPLOYMENT.md) is performed. The repository's current deployment configuration serves both the frontend and API from one origin.
+**Public hosting status, verified 16 November 2026:** the homepage is reachable, but `/api/health`, `/api/ready`, and the model-demo route return HTTP 404. The hosted release does not yet expose the backend. Follow [DEPLOYMENT.md](docs/DEPLOYMENT.md) to deploy the repository-root frontend/API configuration, then verify readiness before claiming the model is live.
 
 ## What the app does
 
@@ -36,6 +36,7 @@ Copy `backend/.env.example` to `backend/.env` for optional settings; FastAPI loa
 ## Verification
 
 ```powershell
+.\.venv\Scripts\python.exe scripts/check_conflicts.py
 .\.venv\Scripts\python.exe -m pytest -q
 npm --prefix frontend run lint
 npm --prefix frontend test
@@ -64,6 +65,7 @@ The model uses seven wearable/time features. It does not score blood counts, mic
 
 ## Project documentation
 
+- [Latest verification: 16 November 2026](docs/VERIFICATION_2026-11-16.md)
 - [Implementation status and remaining limits](docs/IMPLEMENTATION_STATUS.md)
 - [Deployment and post-deploy verification](docs/DEPLOYMENT.md)
 - [API contract](docs/API.md) and [frontend integration](docs/FRONTEND_INTEGRATION.md)
