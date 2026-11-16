@@ -1,0 +1,63 @@
+{
+  "review_date_client": "2026-11-15",
+  "source_commit": "34574ad91f79f0dcebd76d48c52e3020bef72491",
+  "site": "https://astronaut-health-monitoring-nasa-app-infinitydz.vercel.app/",
+  "model_sha256": "7a1650ee53cc5abf01be71c16912696ff4471d7dd7e22fc432258b6dbb396e36",
+  "retraining": {
+    "local_participants": 22,
+    "windows": 5949,
+    "all_window_scores_identical": true,
+    "maximum_absolute_score_difference": 0.0,
+    "calibration_scores_identical": true,
+    "quality_metadata_identical": true,
+    "test_metrics_identical": true,
+    "window_counts": {
+      "calibration": 838,
+      "test": 826,
+      "train": 4285
+    },
+    "held_out_test": {
+      "flagged_fraction_at_threshold": 0.006053268765133172,
+      "mean_anomaly_percentile": 0.5427181632735615,
+      "median_anomaly_percentile": 0.5710023866348448,
+      "score_count": 826
+    },
+    "test_flagged_windows": 5
+  },
+  "source_timestamp_duplicates": 0,
+  "duplicate_timestamp_fixture": {
+    "duplicate_rows": 180,
+    "unique_seconds": 1,
+    "accepted_windows": 1,
+    "reported_fraction": 0.6
+  },
+  "backend_tests": {
+    "passed": 11,
+    "failed": 0,
+    "working_directory": "backend"
+  },
+  "frontend": {
+    "build": "passed after npm ci",
+    "lint": "passed",
+    "npm_reported_vulnerabilities": 0
+  },
+  "production_cors_preflight": {
+    "status": 400,
+    "body": "Disallowed CORS origin"
+  },
+  "missing_model_probe": {
+    "health_status": 200,
+    "model_demo_status": 503
+  },
+  "asset_sha256": {
+    "index-CHHkIgdc.js": "ff836814a9eb668d31a30ae89f9efeefe1acb3d1e7df9e6deedb643aa8eb98fc",
+    "index-DjGzdn6X.css": "966cae5f7a021b5db66cbc51b681455bcd191b4b5c9382e29238cf76f43d5b9c"
+  },
+  "live_assets_identical_to_build": true,
+  "limits": [
+    "No private Vercel account access",
+    "No clinical or flight qualification",
+    "No load or penetration testing",
+    "Retraining checked local source files; publisher archive checksum not independently checked"
+  ]
+}

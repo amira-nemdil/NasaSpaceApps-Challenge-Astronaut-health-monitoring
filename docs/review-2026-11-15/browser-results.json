@@ -1,0 +1,101 @@
+{
+  "initial": {
+    "title": "nasa-health-monitoring-app",
+    "sliders": 15,
+    "bodyText": "Mission Simulator\nMISSION CLOCK\nDay 1 · 00:00\nSIMULATION\nRun\nReset\nSPEED (MISSION HOURS PER SECOND)\n1x\n4x\n12x\n24x\nSCENARIO\nRoutine mission\nRadiation exposure\nIsolation and confinement\nMicrogravity effects\nROUTINE\n\nRest\nAmount\nhours\nHydrate\nExercise\nMEASURE\n\nMedical check\nRESPOND\n\nMedical response\nEnvironmental Hazards\n\nCurrent spaceflight environment status\n\nIsolation & Confinement\n\nEnvironmental condition\n\nNormal\nSpace Radiation\n\nEnvironmental condition\n\nNormal\nGravity Fields\n\nEnvironmental condition\n\nNormal\nHostile & Closed Environment\n\nEnvironmental condition\n\nNormal\nDistance from Earth\n\n400 km\n\n<1 s delay\n\nSpace station\nMoon\nMars\nAstronaut Body Monitoring\nClick a body part to see its status.\nNormal\nWarning\nCritical\nMetrics\nHeadache severity\n00-10\nnormal\n↺\n0\n10\nSleep deficit\n0h\nnormal\n↺\n0\n24\nResting heart rate\n70bpm\nnormal\n↺\n30\n180\nStress (HRV RMSSD)\n55ms\nnormal\n↺\n0\n250\nBreathing rate\n16breaths/min\nnormal\n↺\n4\n40\nEnergy level\n80%\nnormal\n↺\n0\n100\nMicrobiome diversity\n80score\nnormal\n↺\n0\n100\nProteobacteria\n2%\nnormal\n↺\n0\n100\nAkkermansia\n2.5%\nnormal\n↺\n0\n5\nRed blood cells\n4.810^6/uL\nnormal\n↺\n1\n8\nWhite blood cells\n7.510^3/uL\nnormal\n↺\n0\n40\nDizziness\n00-10\nnormal\n↺\n0\n10\nBone & muscle loss\n0% loss\nnormal\n↺\n0\n30\nVision acuity (20/X)\n20/20\nnormal\n↺\n20/15\n20/100\nWeight loss\n0% loss\nnormal\n↺\n0\n20\nMission log\nAction\nCheck\nAlert\nAI\nSystem\n1 entries\nClear\n22:20:02\nSystem\nMonitoring started",
+    "errors": []
+  },
+  "criticalHeart": {
+    "heartRate": "180",
+    "hazards": "Environmental Hazards\n\nCurrent spaceflight environment status\n\nIsolation & Confinement\n\nEnvironmental condition\n\nNormal\nSpace Radiation\n\nEnvironmental condition\n\nNormal\nGravity Fields\n\nEnvironmental condition\n\nNormal\nHostile & Closed Environment\n\nEnvironmental condition\n\nNormal\nDistance from Earth\n\n400 km\n\n<1 s delay\n\nSpace station\nMoon\nMars",
+    "errors": []
+  },
+  "rbcWarning": {
+    "errors": [],
+    "text": "Mission Simulator\nMISSION CLOCK\nDay 1 · 00:00\nSIMULATION\nRun\nReset\nSPEED (MISSION HOURS PER SECOND)\n1x\n4x\n12x\n24x\nSCENARIO\nRoutine mission\nRadiation exposure\nIsolation and confinement\nMicrogravity effects\nROUTINE\n\nRest\nAmount\nhours\nHydrate\nExercise\nMEASURE\n\nMedical check\nRESPOND\n\nMedical response\nEnvironmental Hazards\n\nCurrent spaceflight environment status\n\nIsolation & Confinement\n\nEnvironmental condition\n\nNormal\nSpace Radiation\n\nEnvironmental condition\n\nNormal\nGravity Fields\n\nEnvironmental condition\n\nNormal\nHostile & Closed Environment\n\nEnvironmental condition\n\nNormal\nDistance from Earth\n\n400 km\n\n<1 s delay\n\nSpace station\nMoon\nMars\nAstronaut Body Monitoring\nClick a body part to see its status.\nNormal\nWarning\nCritical\nMetrics\nHeadache severity\n00-10\nnormal\n↺\n0\n10\nSleep deficit\n0h\nnormal\n↺\n0\n24\nResting heart rate\n70bpm\nnormal\n↺\n30\n180\nStress (HRV RMSSD)\n55ms\nnormal\n↺\n0\n250\nBreathing rate\n16breaths/min\nnormal\n↺\n4\n40\nEnergy level\n80%\nnormal\n↺\n0\n100\nMicrobiome diversity\n80score\nnormal\n↺\n0\n100\nProteobacteria\n2%\nnormal\n↺\n0\n100\nAkkermansia\n2.5%\nnormal\n↺\n0\n5\nRed blood cells\n110^6/uL\ncritical\n↺\n1\n8\nWhite blood cells\n7.510^3/uL\nnormal\n↺\n0\n40\nDizziness\n00-10\nnormal\n↺\n0\n10\nBone & muscle loss\n0% loss\nnormal\n↺\n0\n30\nVision acuity (20/X)\n20/20\nnormal\n↺\n20/15\n20/100\nWeight loss\n0% loss\nnormal\n↺\n0\n20\nMission log\nAction\nCheck\nAlert\nAI\nSystem\n5 entries\nClear\n22:20:02\nSystem\nMonitoring started\n22:20:04\nAlert\nResting heart rate is critical (180 bpm). Stop activity, sit or lie down, re-measure and contact the flight surgeon.\n22:20:04\nSystem\nSimulation reset to default health values\n22:20:04\nCheck\nResting heart rate back to normal (70 bpm)\n22:20:04\nAlert\nRed blood cells is critical (1 10^6/uL). Take Erythropoietin (EPO).\nResting heart rate is critical\n180 bpm. Stop activity, sit or lie down, re-measure and contact the flight surgeon.\nRed blood cells is critical\n1 10^6/uL. Take Erythropoietin (EPO)."
+  },
+  "labCrash": {
+    "errors": [
+      "Cannot read properties of undefined (reading 'name')"
+    ],
+    "bodyText": "",
+    "rootChildren": 0
+  },
+  "simulation": {
+    "clockText": "Mission Simulator\nMISSION CLOCK\nDay 1 · 00:24\nSIMULATION\nPause\nReset\nSPEED (MISSION HOURS PER SECOND)\n1x\n4x\n12x\n24x\nSCENARIO\nRoutine mission\nRadiation exposure\nIsolation and confinement\nMicrogravity effects\nROUTINE\n\nRest\nAmount\nhours\nHydrate\nExercise\nMEASURE\n\nMedical check\nRESPOND\n\nMedical response",
+    "hrvValue": "56"
+  },
+  "rest": {
+    "hrvValue": "58"
+  },
+  "offlineReload": {
+    "loaded": false,
+    "error": "page.reload: net::ERR_INTERNET_DISCONNECTED\nCall log:\n\u001b[2m  - waiting for navigation until \"domcontentloaded\"\u001b[22m\n"
+  },
+  "mobileDimensions": {
+    "viewport": 390,
+    "documentWidth": 390
+  },
+  "accessibility": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "count": 20,
+      "examples": [
+        {
+          "html": "<h2 class=\"text-lg font-semibold\">Mission Simulator</h2>",
+          "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.13 (foreground color: #08060d, background color: #0f172b, font size: 18.0pt (24px), font weight: normal). Expected contrast ratio of 3:1"
+        },
+        {
+          "html": "<h2 class=\"text-base font-bold tracking-tight text-slate-100\">Environmental Hazards</h2>",
+          "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.13 (foreground color: #08060d, background color: #0f172b, font size: 18.0pt (24px), font weight: normal). Expected contrast ratio of 3:1"
+        }
+      ]
+    },
+    {
+      "id": "label",
+      "impact": "critical",
+      "description": "Ensure every form element has a label",
+      "count": 15,
+      "examples": [
+        {
+          "html": "<input min=\"0\" max=\"10\" step=\"1\" class=\"mt-2 h-2 w-full cursor-pointer accent-white\" type=\"range\" value=\"0\" style=\"\">",
+          "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+        },
+        {
+          "html": "<input min=\"0\" max=\"24\" step=\"1\" class=\"mt-2 h-2 w-full cursor-pointer accent-white\" type=\"range\" value=\"0\" style=\"\">",
+          "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+        }
+      ]
+    },
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+      "count": 1,
+      "examples": [
+        {
+          "html": "<html lang=\"en\">",
+          "summary": "Fix all of the following:\n  Page must have a level-one heading"
+        }
+      ]
+    },
+    {
+      "id": "select-name",
+      "impact": "critical",
+      "description": "Ensure select element has an accessible name",
+      "count": 1,
+      "examples": [
+        {
+          "html": "<select class=\"rounded-lg bg-slate-800 px-3 py-2 text-sm\"><option value=\"routine\">Routine mission</option><option value=\"radiation\">Radiation exposure</option><option value=\"isolation\">Isolation and confinement</option><option value=\"microgravity\">Microgravity effects</option></select>",
+          "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+        }
+      ]
+    }
+  ],
+  "apiRequests": [],
+  "requestOrigins": [
+    "https://astronaut-health-monitoring-nasa-app-infinitydz.vercel.app"
+  ]
+}
